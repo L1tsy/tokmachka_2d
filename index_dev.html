@@ -417,8 +417,8 @@
                         <span id="hotbarPrimaryAmmo" class="text-[8px] text-stone-300 font-mono leading-none">30 / 180</span>
                     </div>
                 </div>
-                <!-- Slot 2: Secondary Weapon -->
-                <div id="hotbarSlot2" class="tactical-btn px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-80" title="Вторичное оружие [2]">
+                <!-- Slot 2: Secondary Weapon (Strictly hidden when no secondary weapon equipped) -->
+                <div id="hotbarSlot2" class="hidden tactical-btn px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-80" style="display: none;" title="Вторичное оружие [2]">
                     <span class="w-4 h-4 rounded bg-stone-900 text-stone-400 font-mono font-bold text-[9px] flex items-center justify-center border border-stone-700">2</span>
                     <div class="flex flex-col text-left">
                         <span id="hotbarSecondaryName" class="text-[9px] font-extrabold text-stone-300 leading-tight">ПЯ ГРАЧ</span>
@@ -442,6 +442,15 @@
                         <span id="hotbarBandageCount" class="text-[8px] text-stone-300 font-mono leading-none">3 шт</span>
                     </div>
                     <span id="hudBandagesBadge" class="absolute -top-1.5 -right-1.5 oneui-badge px-1 text-[8px] font-extrabold rounded-full bg-red-600 text-white border border-red-400">3</span>
+                </div>
+                <!-- Slot 5 / X: FPV Drone -->
+                <div id="hotbarSlot5" class="tactical-btn relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-purple-800/80 cursor-pointer shadow-lg" title="FPV-Дрон [5 / X] (Клик: запуск, ПКМ/двойной клик: смена режима)">
+                    <span class="w-4 h-4 rounded bg-purple-950 text-purple-300 font-mono font-bold text-[9px] flex items-center justify-center border border-purple-700/60">5/X</span>
+                    <div class="flex flex-col text-left">
+                        <span id="hotbarDroneName" class="text-[9px] font-extrabold text-purple-300 leading-tight flex items-center gap-1"><i class="fa-solid fa-helicopter text-[8px]"></i> FPV</span>
+                        <span id="hotbarDroneMode" class="text-[8px] text-stone-300 font-mono leading-none">КАМИКАДЗЕ</span>
+                    </div>
+                    <span id="hudDroneBadge" class="absolute -top-1.5 -right-1.5 oneui-badge px-1 text-[8px] font-extrabold rounded-full bg-purple-600 text-white border border-purple-400">1</span>
                 </div>
                 <div class="h-6 w-px bg-stone-700/60 mx-0.5"></div>
                 <!-- Action: Reload [R] -->
@@ -1980,10 +1989,10 @@
                     // Stall Partitions (low dividers with wide 160px traversable passageways between boxes)
                     { x: 340, y: 660, w: 140, h: 10, mat: 'partition' },
                     { x: 340, y: 940, w: 140, h: 10, mat: 'partition' },
-                    // Firing counters in each lane
-                    { x: 430, y: 550, w: 45, h: 70, mat: 'concrete' },
-                    { x: 430, y: 760, w: 45, h: 80, mat: 'concrete' },
-                    { x: 430, y: 1030, w: 45, h: 70, mat: 'concrete' },
+                    // Firing counters in each lane (mat: 'counter' allows shooting over them downrange)
+                    { x: 430, y: 550, w: 45, h: 70, mat: 'counter' },
+                    { x: 430, y: 760, w: 45, h: 80, mat: 'counter' },
+                    { x: 430, y: 1030, w: 45, h: 70, mat: 'counter' },
                     // Grenade bank training walls at top
                     { x: 480, y: 250, w: 20, h: 120, mat: 'concrete' },
                     { x: 740, y: 120, w: 20, h: 160, mat: 'concrete' },
@@ -2400,7 +2409,7 @@
 
         function checkCollision(x, y, r, forBullets = false) {
             for (const w of WALLS) {
-                if (forBullets && w.mat === 'barrier') continue; // Barrier allows bullets & grenades to pass downrange!
+                if (forBullets && (w.mat === 'barrier' || w.mat === 'counter' || w.mat === 'partition')) continue; // Barrier & counters allow bullets & grenades to pass downrange!
                 const cx = Math.max(w.x, Math.min(x, w.x + w.w));
                 const cy = Math.max(w.y, Math.min(y, w.y + w.h));
                 if (Math.hypot(x - cx, y - cy) < r) return true;
@@ -2462,6 +2471,10 @@
 
         function getActiveWeapon(u) {
             if (u.usingSecondary) {
+                const secId = u.preset?.secondary;
+                if (secId && secId !== 'none' && ALL_WEAPONS[secId]) {
+                    return ALL_WEAPONS[secId];
+                }
                 return u.side === 'red' ? WEAPONS_RU.ru_grach : WEAPONS_UA.ua_glock;
             }
             return ALL_WEAPONS[u.cls] || (u.side === 'red' ? WEAPONS_RU.ru_assault : WEAPONS_UA.ua_assault);
@@ -2484,7 +2497,6 @@
 
         function createUnit(isPlayer, side, cls, x, y, angle, callsign) {
             const w = ALL_WEAPONS[cls] || (side === 'red' ? WEAPONS_RU.ru_assault : WEAPONS_UA.ua_assault);
-            const secW = side === 'red' ? WEAPONS_RU.ru_grach : WEAPONS_UA.ua_glock;
             const baseArmorVal = w.baseArmor || 100;
             return {
                 isPlayer,
@@ -2503,13 +2515,14 @@
                 usingSecondary: false,
                 primaryAmmo: w.magSize,
                 primaryMags: w.mags,
-                secondaryAmmo: secW.magSize,
-                secondaryMags: secW.mags,
+                secondaryAmmo: 0,
+                secondaryMags: 0,
                 ammo: w.magSize,
                 mags: w.mags,
-                smokes: w.smokes,
-                nades: w.nades,
-                band: w.band,
+                smokes: w.smokes || 2,
+                nades: w.nades || 2,
+                band: w.band || 3,
+                fpvDrones: 1,
                 kills: 0,
                 deaths: 0,
                 state: 'active',
@@ -2531,8 +2544,12 @@
 
         function toggleSecondaryWeapon(u) {
             if (!u || u.state !== 'active') return;
-            const secId = u.preset?.secondary || (u.side === 'red' ? 'ru_grach' : 'ua_glock');
-            if (!secId || secId === 'none') return;
+            const secId = u.preset?.secondary;
+            if (!secId || secId === 'none' || !ALL_WEAPONS[secId] || ALL_WEAPONS[secId].role !== 'ВТОРИЧНОЕ') {
+                u.usingSecondary = false;
+                u.activeSlot = 1;
+                return;
+            }
             const secWepObj = ALL_WEAPONS[secId];
             const primWepObj = ALL_WEAPONS[u.cls] || (u.side === 'red' ? WEAPONS_RU.ru_assault : WEAPONS_UA.ua_assault);
 
@@ -2546,6 +2563,7 @@
                 u.secondaryAmmo = u.ammo;
                 u.secondaryMags = u.mags;
                 u.usingSecondary = false;
+                u.activeSlot = 1;
                 u.ammo = u.primaryAmmo !== undefined ? u.primaryAmmo : primWepObj.magSize;
                 u.mags = u.primaryMags !== undefined ? u.primaryMags : primWepObj.mags;
                 spawnText(u.x, u.y - 22, primWepObj.name, '#2dd4bf');
@@ -2553,6 +2571,7 @@
                 u.primaryAmmo = u.ammo;
                 u.primaryMags = u.mags;
                 u.usingSecondary = true;
+                u.activeSlot = 2;
                 u.ammo = u.secondaryAmmo !== undefined ? u.secondaryAmmo : (secWepObj ? secWepObj.magSize : 18);
                 u.mags = u.secondaryMags !== undefined ? u.secondaryMags : (secWepObj ? secWepObj.mags : 4);
                 spawnText(u.x, u.y - 22, secWepObj ? secWepObj.name : 'ПИСТОЛЕТ', '#fef08a');
@@ -2617,9 +2636,18 @@
         }
 
         function shoot(u, now) {
-            if (u.state !== 'active' || u.reloading || now < u.reloadTo) return;
+            if (u.state !== 'active') return;
+            if (u.reloading && now < u.reloadTo) return;
             const w = getActiveWeapon(u);
-            if (now - u.lastShot < w.fireRate) return;
+            if (!w) return;
+            if (now - u.lastShot < (w.fireRate || 90)) return;
+
+            // Player safety check for valid ammo number
+            if (u.isPlayer) {
+                if (u.ammo === undefined || isNaN(u.ammo)) {
+                    u.ammo = w.magSize || 30;
+                }
+            }
 
             if (u.ammo <= 0) {
                 reload(u, now);
@@ -2629,9 +2657,19 @@
             u.ammo--;
             u.lastShot = now;
             u.muzzleFlashUntil = now + 55;
+            if (u.isPlayer) lastShootTimeForRecoil = now;
 
             if (u.ammo <= 0) {
                 reload(u, now);
+            }
+
+            // Guaranteed accurate aiming alignment for player: muzzle strictly follows cursor / joy stick
+            if (u.isPlayer) {
+                if (joyAim.active && Math.hypot(joyAim.x, joyAim.y) > 0.15) {
+                    u.a = Math.atan2(joyAim.y, joyAim.x);
+                } else if (mouse.worldX !== undefined && mouse.worldY !== undefined) {
+                    u.a = Math.atan2(mouse.worldY - u.y, mouse.worldX - u.x);
+                }
             }
 
             const diffPreset = DIFFICULTY_PRESETS[gameState.difficulty] || DIFFICULTY_PRESETS.normal;
@@ -2645,18 +2683,19 @@
                 if (las) attachSpreadMult *= las.spreadMult;
             }
             const spreadFactor = u.isPlayer ? attachSpreadMult : diffPreset.spreadMult;
-            const spreadA = u.a + (Math.random() - 0.5) * w.spread * spreadFactor;
+            const spreadA = u.a + (Math.random() - 0.5) * (w.spread || 0.04) * spreadFactor;
 
-            const muzzleX = u.x + Math.cos(u.a) * 24;
-            const muzzleY = u.y + Math.sin(u.a) * 24;
+            const muzzleDist = 26;
+            const muzzleX = u.x + Math.cos(u.a) * muzzleDist;
+            const muzzleY = u.y + Math.sin(u.a) * muzzleDist;
 
             bbs.push({
                 x: muzzleX,
                 y: muzzleY,
                 prevX: muzzleX,
                 prevY: muzzleY,
-                vx: Math.cos(spreadA) * w.speed,
-                vy: Math.sin(spreadA) * w.speed,
+                vx: Math.cos(spreadA) * (w.speed || 21.0),
+                vy: Math.sin(spreadA) * (w.speed || 21.0),
                 side: u.side,
                 shooter: u,
                 isP: u.isPlayer,
@@ -2665,7 +2704,7 @@
                 pierceChance: w.pierceChance || 0.0,
                 bleedChance: w.bleedChance || 0.25,
                 tracerCol: w.tracerCol || '#fde047',
-                life: Math.floor(w.range / w.speed),
+                life: Math.floor((w.range || 480) / (w.speed || 21.0)),
                 isRocket: !!w.isRocket,
                 blastRadius: w.blastRadius || 0
             });
@@ -2711,8 +2750,10 @@
         }
 
         function reload(u, now) {
-            if (u.state !== 'active' || u.reloading || now < u.reloadTo) return;
+            if (u.state !== 'active') return;
+            if (u.reloading && now < u.reloadTo) return;
             const w = getActiveWeapon(u);
+            if (!w) return;
             if (u.ammo >= w.magSize) return;
             if (u.mags <= 0) {
                 if (!u.isPlayer) {
@@ -2729,8 +2770,9 @@
             u.mags--;
             u.reloading = true;
             u.reloadStart = now;
-            u.reloadTo = now + w.reloadMs;
+            u.reloadTo = now + (w.reloadMs || 1400);
             if (u.isPlayer) {
+                audio.playShot('reload');
                 updateUI();
             }
         }
@@ -3076,6 +3118,51 @@
             updateSummaryUI();
         }
 
+        function applyPresetToPlayer(preset) {
+            if (!preset || !player) return;
+            selectedPresetId = preset.id;
+            gameState.playerClass = preset.weapon;
+            const pClass = preset.weapon;
+            const w = ALL_WEAPONS[pClass] || WEAPONS_RU.ru_assault;
+            const hasSec = preset.secondary && preset.secondary !== 'none' && ALL_WEAPONS[preset.secondary];
+            const secW = hasSec ? ALL_WEAPONS[preset.secondary] : null;
+            const arm = ATTACHMENTS.armor[preset.armor] || ATTACHMENTS.armor.medium;
+
+            player.cls = pClass;
+            player.preset = preset;
+            player.activeSlot = 1;
+            player.usingSecondary = false;
+            player.attachments = { muzzle: preset.muzzle, optic: preset.optic, laser: preset.laser };
+            player.maxArmor = arm.ap;
+            player.armor = arm.ap;
+            player.speedMult = (w.speedMult || 1.0) * (arm.speedMult || 1.0);
+            player.primaryAmmo = w.magSize;
+            player.primaryMags = w.mags;
+            player.secondaryAmmo = secW ? secW.magSize : 0;
+            player.secondaryMags = secW ? secW.mags : 0;
+            player.ammo = w.magSize;
+            player.mags = w.mags;
+            player.reloading = false;
+            player.reloadStart = 0;
+            player.reloadTo = 0;
+
+            if (currentMapId === 'range') {
+                player.nades = 99;
+                player.smokes = 99;
+                player.band = 99;
+                player.fpvDrones = 99;
+            } else {
+                player.nades = preset.grenades || w.nades || 2;
+                player.smokes = w.smokes || 2;
+                player.band = w.band || 3;
+                player.fpvDrones = 1;
+            }
+
+            spawnText(player.x, player.y - 25, 'СЕТАП: ' + preset.name, '#4ade80');
+            updateUI();
+            updateSummaryUI();
+        }
+
         function openQuickLoadoutModal() {
             const modal = document.getElementById('quickLoadoutModal');
             const container = document.getElementById('quickLoadoutCardsContainer');
@@ -3088,44 +3175,53 @@
             }
             container.innerHTML = '';
 
-            const weaponsDict = gameState.playerSide === 'red' ? WEAPONS_RU : WEAPONS_UA;
-            Object.keys(weaponsDict).forEach(key => {
-                if (key.includes('grach') || key.includes('glock')) return;
-                const w = weaponsDict[key];
+            const presets = getAllPresetsForSide(gameState.playerSide);
+            presets.forEach(preset => {
+                const w = ALL_WEAPONS[preset.weapon] || WEAPONS_RU.ru_assault;
+                const hasSec = preset.secondary && preset.secondary !== 'none' && ALL_WEAPONS[preset.secondary];
+                const sec = hasSec ? ALL_WEAPONS[preset.secondary] : null;
+                const arm = ATTACHMENTS.armor[preset.armor] || ATTACHMENTS.armor.medium;
+                const isActive = (selectedPresetId === preset.id) || (player && player.preset && player.preset.id === preset.id);
+
                 const card = document.createElement('div');
-                card.className = `tactical-btn p-2 rounded-xl cursor-pointer flex items-center justify-between gap-2 ${gameState.playerClass === key ? 'tactical-btn-active' : ''}`;
+                card.className = `tactical-btn p-3 rounded-xl cursor-pointer flex items-center justify-between gap-3 border ${isActive ? 'tactical-btn-active border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'border-stone-800 hover:border-stone-600'}`;
+
+                const secText = sec ? sec.name : 'Без пистолета';
+                const muzName = ATTACHMENTS.muzzle[preset.muzzle]?.name || 'Штат';
+                const optName = ATTACHMENTS.optic[preset.optic]?.name || 'Механика';
+
                 card.innerHTML = `
-                    <div class="flex flex-col">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-xs text-white">${w.name}</span>
-                            <span class="text-[9px] px-1 py-0.2 rounded bg-sky-950 text-sky-300 border border-sky-700/60 font-bold">${w.baseArmor} AP</span>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-stone-950 flex items-center justify-center border border-stone-800 text-stone-300">
+                            ${getWeaponSilhouetteSvg(preset.weapon, 'w-8 h-4')}
                         </div>
-                        <span class="text-[9px] text-stone-400">${w.desc}</span>
+                        <div class="flex flex-col text-left">
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-xs text-white">${preset.name}</span>
+                                ${!preset.isDefault ? '<span class="text-[8px] px-1 rounded bg-amber-950 text-amber-300 border border-amber-600/50 font-bold">КАСТОМ</span>' : ''}
+                                ${isActive ? '<span class="text-[8px] px-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-600/50 font-bold">АКТИВЕН</span>' : ''}
+                            </div>
+                            <div class="text-[10px] text-stone-300 font-mono mt-0.5">
+                                <b class="text-emerald-400">${w.name}</b> • <span class="text-sky-300">${arm.name}</span> • <span class="text-yellow-400">${secText}</span>
+                            </div>
+                            <div class="text-[9px] text-stone-400">
+                                Мод: ${optName} / ${muzName}
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-[9px] px-2 py-1 rounded bg-stone-900 border border-stone-700 text-amber-300 font-bold">ВЫБРАТЬ</span>
+                    <button class="tactical-btn px-3 py-1.5 rounded-lg text-xs font-bold ${isActive ? 'bg-emerald-600 text-white' : 'bg-stone-800 text-stone-200 hover:text-white'}">
+                        ${isActive ? 'ВЫБРАН' : 'ВЗЯТЬ'}
+                    </button>
                 `;
+
                 card.addEventListener('click', () => {
-                    gameState.playerClass = key;
+                    applyPresetToPlayer(preset);
                     modal.classList.add('hidden');
-                    updateSummaryUI();
-                    if (player) {
-                        spawnText(player.x, player.y - 20, w.name, '#4ade80');
-                        if (player.state === 'wounded' || player.state === 'dead') {
-                            const newW = ALL_WEAPONS[key];
-                            player.cls = key;
-                            player.reloading = false;
-                            player.reloadStart = 0;
-                            player.reloadTo = 0;
-                            player.ammo = newW.magSize;
-                            player.mags = newW.mags;
-                            player.maxArmor = newW.baseArmor || 100;
-                            player.armor = player.maxArmor;
-                        }
-                    }
-                    updateUI();
                 });
+
                 container.appendChild(card);
             });
+
             modal.classList.remove('hidden');
         }
 
@@ -3164,7 +3260,8 @@
             gameState.playerClass = preset.weapon;
             const pClass = gameState.playerClass;
             const w = ALL_WEAPONS[pClass] || WEAPONS_RU.ru_assault;
-            const secW = ALL_WEAPONS[preset.secondary] || (pSide === 'red' ? WEAPONS_RU.ru_grach : WEAPONS_UA.ua_glock);
+            const hasSec = preset.secondary && preset.secondary !== 'none' && ALL_WEAPONS[preset.secondary];
+            const secW = hasSec ? ALL_WEAPONS[preset.secondary] : null;
             const arm = ATTACHMENTS.armor[preset.armor] || ATTACHMENTS.armor.medium;
 
             const spawnRedX = WORLD_W - 220;
@@ -3185,8 +3282,9 @@
             player.maxArmor = arm.ap;
             player.armor = arm.ap;
             player.speedMult = (w.speedMult || 1.0) * (arm.speedMult || 1.0);
-            player.secondaryAmmo = secW.magSize;
-            player.secondaryMags = secW.mags;
+            player.secondaryAmmo = secW ? secW.magSize : 0;
+            player.secondaryMags = secW ? secW.mags : 0;
+            player.fpvDrones = (currentMapId === 'range') ? 99 : 1;
 
             player.nades = (currentMapId === 'range') ? 99 : (preset.grenades || w.nades || 2);
             if (currentMapId === 'range') {
@@ -3246,7 +3344,8 @@
             const pSide = gameState.playerSide;
             const pClass = gameState.playerClass;
             const w = ALL_WEAPONS[pClass] || WEAPONS_RU.ru_assault;
-            const secW = ALL_WEAPONS[preset.secondary] || (pSide === 'red' ? WEAPONS_RU.ru_grach : WEAPONS_UA.ua_glock);
+            const hasSec = preset.secondary && preset.secondary !== 'none' && ALL_WEAPONS[preset.secondary];
+            const secW = hasSec ? ALL_WEAPONS[preset.secondary] : null;
             const arm = ATTACHMENTS.armor[preset.armor] || ATTACHMENTS.armor.medium;
 
             const spawnRedX = WORLD_W - 220;
@@ -3265,8 +3364,9 @@
             player.bleeding = false;
             player.primaryAmmo = w.magSize;
             player.primaryMags = w.mags;
-            player.secondaryAmmo = secW.magSize;
-            player.secondaryMags = secW.mags;
+            player.secondaryAmmo = secW ? secW.magSize : 0;
+            player.secondaryMags = secW ? secW.mags : 0;
+            player.fpvDrones = (currentMapId === 'range') ? 99 : 1;
             player.ammo = w.magSize;
             player.mags = w.mags;
             player.smokes = (currentMapId === 'range') ? 99 : (w.smokes || 2);
@@ -3618,13 +3718,219 @@
             });
         }
 
+        let fpvDrone = null;
+        let selectedDroneType = 'kamikaze'; // 'kamikaze' | 'bomber'
+
+        function toggleDroneType() {
+            selectedDroneType = (selectedDroneType === 'kamikaze') ? 'bomber' : 'kamikaze';
+            const modeEl = document.getElementById('hotbarDroneMode');
+            if (modeEl) modeEl.textContent = selectedDroneType === 'kamikaze' ? 'КАМИКАДЗЕ' : 'БОМБАРДИР';
+            if (player) {
+                spawnText(player.x, player.y - 25, 'FPV: ' + (selectedDroneType === 'kamikaze' ? 'КАМИКАДЗЕ' : 'БОМБАРДИР (3 ВОГ)'), '#c084fc');
+            }
+        }
+
+        function launchFpvDrone() {
+            if (!gameState.running || !player || player.state !== 'active') return;
+            if (fpvDrone && fpvDrone.active) {
+                abortFpvDrone();
+                return;
+            }
+            if ((player.fpvDrones || 0) <= 0 && currentMapId !== 'range') {
+                spawnText(player.x, player.y - 25, 'НЕТ FPV ДРОНОВ', '#ef4444');
+                audio.playDryFire();
+                return;
+            }
+
+            if (currentMapId !== 'range') player.fpvDrones = Math.max(0, (player.fpvDrones || 1) - 1);
+
+            const now = performance.now();
+            fpvDrone = {
+                active: true,
+                type: selectedDroneType,
+                side: player.side,
+                operator: player,
+                x: player.x + Math.cos(player.a) * 36,
+                y: player.y + Math.sin(player.a) * 36,
+                a: player.a,
+                speed: 7.6,
+                turnSpeed: 0.08,
+                launchTime: now,
+                duration: 10000, // 10 секунд
+                grenades: 3, // для бомбардира
+                lastDropTime: 0,
+                state: 'flying', // 'flying' | 'falling' | 'exploded'
+                fallStartTime: 0,
+                rebJammed: false,
+                rebTime: 0
+            };
+
+            spawnText(player.x, player.y - 25, 'FPV В ВОЗДУХЕ! [10 СЕК]', '#c084fc');
+            audio.playShot('cqb');
+            updateUI();
+        }
+
+        function abortFpvDrone() {
+            if (!fpvDrone || fpvDrone.state !== 'flying') return;
+            fpvDrone.state = 'falling';
+            fpvDrone.fallStartTime = performance.now();
+            spawnText(fpvDrone.x, fpvDrone.y - 20, 'СИГНАЛ ПРЕРВАН', '#f87171');
+        }
+
+        function triggerDroneDetonation(drone, directHit = false) {
+            if (!drone || drone.state === 'exploded') return;
+            drone.active = false;
+            drone.state = 'exploded';
+            const blastR = (drone.type === 'kamikaze') ? 95 : 70;
+            const maxDmg = (drone.type === 'kamikaze') ? 480 : 250;
+
+            triggerRocketBlast(drone.x, drone.y, { shooter: drone.operator, side: drone.side, blastRadius: blastR, dmg: maxDmg });
+            screenShake = 22;
+            audio.playExplosion();
+
+            if (currentMapId === 'range') {
+                checkRangeHit(drone.x, drone.y, blastR, maxDmg, true);
+            }
+
+            setTimeout(() => {
+                fpvDrone = null;
+                snapCameraToPlayer();
+                updateUI();
+            }, 600);
+        }
+
+        function dropFpvGrenade() {
+            if (!fpvDrone || fpvDrone.state !== 'flying') return;
+            if (fpvDrone.type !== 'bomber') {
+                triggerDroneDetonation(fpvDrone, false);
+                return;
+            }
+            const now = performance.now();
+            if (fpvDrone.grenades <= 0 || now - fpvDrone.lastDropTime < 800) return;
+
+            fpvDrone.grenades--;
+            fpvDrone.lastDropTime = now;
+            spawnText(fpvDrone.x, fpvDrone.y - 20, 'ВОГ СБРОШЕН! (' + fpvDrone.grenades + '/3)', '#facc15');
+
+            nades.push({
+                x: fpvDrone.x,
+                y: fpvDrone.y,
+                startX: fpvDrone.x,
+                startY: fpvDrone.y,
+                tx: fpvDrone.x + (Math.random() - 0.5) * 12,
+                ty: fpvDrone.y + (Math.random() - 0.5) * 12,
+                path: [{ x: fpvDrone.x, y: fpvDrone.y }, { x: fpvDrone.x, y: fpvDrone.y }],
+                pathIdx: 0,
+                segProgress: 0,
+                landed: false,
+                fuse: 45, // ~0.75 sec vertical drop
+                rot: 0,
+                side: fpvDrone.side,
+                isPlayer: true
+            });
+            audio.playShot('dmr');
+        }
+
         function updatePhysics(now) {
             if (!player) return;
+
+            // Recalculate mouse world coordinates every frame relative to player position
+            if (canvas && player) {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                mouse.worldX = player.x + (mouse.x - centerX) / zoomScale;
+                mouse.worldY = player.y + (mouse.y - centerY) / zoomScale;
+            }
 
             // Real-time continuous Grenade throw distance update while LMB is held
             if (player.activeSlot === 3 && player.nadeCharging) {
                 const curDist = Math.hypot(mouse.worldX - player.x, mouse.worldY - player.y);
                 player.nadeChargeDist = Math.max(70, Math.min(500, curDist));
+            }
+
+            // Update FPV Drone Flight, Timers and REB Domes
+            if (fpvDrone && fpvDrone.active) {
+                const d = fpvDrone;
+                const elapsed = now - d.launchTime;
+                const remFlightTime = Math.max(0, d.duration - elapsed);
+
+                // Check Enemy REB Dome Protection around Enemy Base (radius: 260px)
+                // Protects bases against spawn camping with FPV drones!
+                const enemyBaseX = (d.side === 'red') ? 180 : (WORLD_W - 180);
+                const enemyBaseY = WORLD_H / 2;
+                const distToEnemyBase = Math.hypot(d.x - enemyBaseX, d.y - enemyBaseY);
+                if (currentMapId !== 'range' && distToEnemyBase < 260) {
+                    d.rebJammed = true;
+                    d.rebTime = (d.rebTime || 0) + 16;
+                    if (d.rebTime > 1100 && d.state === 'flying') {
+                        d.state = 'falling';
+                        d.fallStartTime = now;
+                        spawnText(d.x, d.y - 25, '⚠️ СБИТ КУПОЛОМ РЭБ БАЗЫ!', '#ef4444');
+                    }
+                } else {
+                    d.rebJammed = false;
+                }
+
+                if (d.state === 'flying') {
+                    // Fly towards mouse cursor or aim direction
+                    let steerAngle = d.a;
+                    if (mouse.worldX !== undefined && mouse.worldY !== undefined) {
+                        steerAngle = Math.atan2(mouse.worldY - d.y, mouse.worldX - d.x);
+                    }
+                    let aDiff = steerAngle - d.a;
+                    while (aDiff < -Math.PI) aDiff += Math.PI * 2;
+                    while (aDiff > Math.PI) aDiff -= Math.PI * 2;
+                    d.a += aDiff * d.turnSpeed;
+
+                    // Fly forwards over obstacles (no collision with walls/trenches)
+                    d.x += Math.cos(d.a) * d.speed;
+                    d.y += Math.sin(d.a) * d.speed;
+
+                    // Drone rotor wash smoke puff
+                    if (Math.random() < 0.3) {
+                        effects.push({
+                            type: 'smoke_puff',
+                            x: d.x - Math.cos(d.a) * 12 + (Math.random() - 0.5) * 8,
+                            y: d.y - Math.sin(d.a) * 12 + (Math.random() - 0.5) * 8,
+                            r: 3,
+                            life: 12,
+                            maxLife: 12
+                        });
+                    }
+
+                    // Check timeout (10 seconds flight time limit)
+                    if (remFlightTime <= 0) {
+                        d.state = 'falling';
+                        d.fallStartTime = now;
+                        spawnText(d.x, d.y - 25, 'БАТАРЕЯ РАЗРЯЖЕНА - ПАДЕНИЕ!', '#fb923c');
+                    }
+
+                    // Kamikaze target impact detection
+                    if (d.type === 'kamikaze') {
+                        const enemies = bots.filter(b => b.side !== d.side && b.state === 'active');
+                        for (const b of enemies) {
+                            if (Math.hypot(b.x - d.x, b.y - d.y) < 32) {
+                                triggerDroneDetonation(d, true);
+                                break;
+                            }
+                        }
+                    }
+                } else if (d.state === 'falling') {
+                    // Falling spiral animation for 1.2s before explosion
+                    d.a += 0.28;
+                    d.x += Math.cos(d.a) * 2.2;
+                    d.y += Math.sin(d.a) * 2.2;
+                    if (Math.random() < 0.6) {
+                        spawnImpactSparks(d.x, d.y, '#f97316', 3);
+                    }
+                    if (now - d.fallStartTime > 1200) {
+                        triggerDroneDetonation(d, false);
+                    }
+                }
+
+                // Smooth camera follows FPV drone
+                cam.x += (d.x - canvas.width / 2 - cam.x) * 0.18;
+                cam.y += (d.y - canvas.height / 2 - cam.y) * 0.18;
             }
 
             // Process reload completion for all units
@@ -3684,11 +3990,11 @@
 
             if (player.state === 'active') {
                 // Strafe movement independent of aim
-                if (Math.hypot(mx, my) > 0.05) {
+                if (Math.hypot(mx, my) > 0.05 && (!fpvDrone || fpvDrone.state !== 'flying')) {
                     moveUnit(player, mx, my, 1.0);
                 }
 
-                // Aiming priority: Auto-Aim (when enabled on Recruit) -> Aim Joystick -> Mouse Aim -> Movement fallback
+                // Aiming priority: Auto-Aim (when enabled on Recruit) -> Aim Joystick -> Mouse Aim
                 const isAutoAimActive = (gameState.autoAim && gameState.difficulty === 'easy');
                 if (isAutoAimActive) {
                     const activeWep = getActiveWeapon(player);
@@ -3710,24 +4016,19 @@
                         while (aDiff > Math.PI) aDiff -= Math.PI * 2;
                         player.a += aDiff * 0.25; // Smooth swift tracking
                     }
-                    // MANUAL AIM STRICTLY LOCKED: Mouse movement and joystick cannot override direction!
                 } else if (joyAim.active && Math.hypot(joyAim.x, joyAim.y) > 0.15) {
                     player.a = Math.atan2(joyAim.y, joyAim.x);
                     if (Math.hypot(joyAim.x, joyAim.y) >= joyAim.fireThreshold) {
                         shoot(player, now);
                     }
                 } else {
-                    // Full manual aiming: Mouse cursor takes precedence, then WASD move fallback
-                    if (mouse.hasMoved) {
-                        player.a = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
-                    } else if (Math.hypot(mx, my) > 0.05) {
-                        player.a = Math.atan2(my, mx);
-                    }
+                    // Full manual mouse aiming: muzzle strictly aligns with crosshair
+                    player.a = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
                 }
 
                 // Firing: Left Mouse Button, Space, or Mobile Fire Button
-                // Strictly SUPPRESS gun fire if grenade slot (3) is active!
-                if (player.activeSlot !== 3 && (mouse.isDown || isManualFire || keys['Space'])) {
+                // Strictly SUPPRESS gun fire if grenade slot (3) or FPV drone is active!
+                if (!fpvDrone && player.activeSlot !== 3 && (mouse.isDown || isManualFire || keys['Space'])) {
                     shoot(player, now);
                 }
             } else if (player.state === 'wounded') {
@@ -3738,26 +4039,29 @@
                 const rem = Math.max(0, Math.ceil((player.respawnTo - now) / 1000));
                 document.getElementById('respawnCountdown').textContent = rem;
                 if (now > player.respawnTo) {
-                    const w = ALL_WEAPONS[player.cls];
-                    const secW = player.side === 'red' ? WEAPONS_RU.ru_grach : WEAPONS_UA.ua_glock;
+                    const w = ALL_WEAPONS[player.cls] || WEAPONS_RU.ru_assault;
+                    const hasSec = player.preset?.secondary && player.preset.secondary !== 'none' && ALL_WEAPONS[player.preset.secondary];
+                    const secW = hasSec ? ALL_WEAPONS[player.preset.secondary] : null;
                     player.state = 'active';
                     player.hp = 100;
                     player.maxArmor = w.baseArmor || 100;
                     player.armor = player.maxArmor;
                     player.bleeding = false;
                     player.usingSecondary = false;
+                    player.activeSlot = 1;
                     player.reloading = false;
                     player.reloadStart = 0;
                     player.reloadTo = 0;
                     player.primaryAmmo = w.magSize;
                     player.primaryMags = w.mags;
-                    player.secondaryAmmo = secW.magSize;
-                    player.secondaryMags = secW.mags;
+                    player.secondaryAmmo = secW ? secW.magSize : 0;
+                    player.secondaryMags = secW ? secW.mags : 0;
                     player.ammo = w.magSize;
                     player.mags = w.mags;
-                    player.band = w.band;
-                    player.smokes = w.smokes;
-                    player.nades = w.nades;
+                    player.band = (currentMapId === 'range') ? 99 : (w.band || 3);
+                    player.smokes = (currentMapId === 'range') ? 99 : (w.smokes || 2);
+                    player.nades = (currentMapId === 'range') ? 99 : (w.nades || 2);
+                    player.fpvDrones = (currentMapId === 'range') ? 99 : 1;
                     if (currentMapId === 'range') {
                         player.x = 340; player.y = WORLD_H / 2; player.a = 0;
                     } else if (player.side === 'red') {
@@ -4634,6 +4938,20 @@
                 }
                 ctx.restore();
 
+                // Armory Stand Marker on Firing Line (x: 430, y: 760..840)
+                ctx.save();
+                const armDist = Math.hypot(player.x - 430, player.y - 800);
+                const isNearArmory = armDist < 180;
+                ctx.fillStyle = isNearArmory ? '#34d399' : '#64748b';
+                ctx.font = 'bold 10px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText('🎯 ОРУЖЕЙНАЯ СТОЙКА', 430, 746);
+                if (isNearArmory) {
+                    ctx.fillStyle = '#fef08a';
+                    ctx.fillText('[F / КЛИК] ВЫБРАТЬ СЕТАП', 430, 856);
+                }
+                ctx.restore();
+
                 // 1. Yellow/Black Hazard Caution Line at barrier (x = 470)
                 ctx.save();
                 ctx.fillStyle = 'rgba(234, 179, 8, 0.25)';
@@ -5228,7 +5546,201 @@
                 ctx.globalAlpha = 1.0;
             }
 
+            // Base REB Jammer Dome Visualizer (Combat Maps only - anti-spawnkill)
+            if (currentMapId !== 'range') {
+                const spawnMidY = WORLD_H / 2;
+                // Yellow Base REB Dome
+                ctx.save();
+                ctx.strokeStyle = 'rgba(250, 204, 21, 0.45)';
+                ctx.fillStyle = 'rgba(250, 204, 21, 0.05)';
+                ctx.lineWidth = 1.8;
+                ctx.setLineDash([8, 8]);
+                ctx.beginPath();
+                ctx.arc(180, spawnMidY, 260, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(250, 204, 21, 0.8)';
+                ctx.font = 'bold 10px "JetBrains Mono"';
+                ctx.textAlign = 'center';
+                ctx.fillText('🛡️ КУПОЛ РЭБ (БАЗА УКР)', 180, spawnMidY - 268);
+                ctx.restore();
+
+                // Red Base REB Dome
+                ctx.save();
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.45)';
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.05)';
+                ctx.lineWidth = 1.8;
+                ctx.setLineDash([8, 8]);
+                ctx.beginPath();
+                ctx.arc(WORLD_W - 180, spawnMidY, 260, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+                ctx.font = 'bold 10px "JetBrains Mono"';
+                ctx.textAlign = 'center';
+                ctx.fillText('🛡️ КУПОЛ РЭБ (БАЗА РФ)', WORLD_W - 180, spawnMidY - 268);
+                ctx.restore();
+            }
+
+            // Render FPV Drone Model (Flying above obstacles with ground shadow)
+            if (fpvDrone && fpvDrone.active) {
+                const fd = fpvDrone;
+                ctx.save();
+                // 1. Ground Shadow below drone
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+                ctx.beginPath();
+                ctx.ellipse(fd.x + 8, fd.y + 14, 14, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 2. High-Altitude Elevated Drone Body
+                ctx.translate(fd.x, fd.y);
+                ctx.rotate(fd.a);
+
+                // Rotor Arms (X-frame)
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(-16, -16); ctx.lineTo(16, 16);
+                ctx.moveTo(-16, 16); ctx.lineTo(16, -16);
+                ctx.stroke();
+
+                // Spinning Propellers (Blurred discs)
+                const propTime = performance.now() * 0.04;
+                ctx.fillStyle = 'rgba(228, 228, 231, 0.45)';
+                [[-16, -16], [16, -16], [-16, 16], [16, 16]].forEach(([px, py]) => {
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, 7, 3, propTime, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                // Drone Central Hull
+                ctx.fillStyle = fd.side === 'red' ? '#991b1b' : '#854d0e';
+                ctx.strokeStyle = '#09090b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.roundRect(-8, -8, 16, 16, 3);
+                ctx.fill();
+                ctx.stroke();
+
+                // Payload: Kamikaze Warhead or Bomber Grenades
+                if (fd.type === 'kamikaze') {
+                    ctx.fillStyle = '#f97316';
+                    ctx.beginPath();
+                    ctx.arc(8, 0, 4.5, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = '#4ade80';
+                    ctx.fillRect(-4, -3, 8, 6);
+                }
+
+                // Front FPV Camera Lens
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(9, 0, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
             ctx.restore();
+
+            // FPV Combat Drone HUD OSD & Analog Signal Noise Overlay
+            if (fpvDrone && fpvDrone.active) {
+                const fd = fpvDrone;
+                const nowMs = performance.now();
+                const remSec = Math.max(0, (fd.duration - (nowMs - fd.launchTime)) / 1000).toFixed(1);
+                const distFromOp = Math.hypot(fd.x - fd.operator.x, fd.y - fd.operator.y);
+                const signalPct = Math.max(5, Math.min(100, Math.round(100 - (distFromOp / 16))));
+
+                // 1. Fullscreen Analog Signal Noise / Scanlines / REB Distortion
+                ctx.save();
+                let noiseAlpha = Math.min(0.85, Math.max(0.04, (distFromOp - 400) / 1200));
+                if (fd.rebJammed) noiseAlpha = Math.min(0.92, noiseAlpha + 0.55);
+
+                // Scanline bands
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+                for (let y = 0; y < canvas.height; y += 4) {
+                    ctx.fillRect(0, y, canvas.width, 1.5);
+                }
+
+                // Horizontal Static Glitches
+                if (noiseAlpha > 0.12 || Math.random() < 0.25) {
+                    const glitches = Math.floor(noiseAlpha * 14);
+                    for (let g = 0; g < glitches; g++) {
+                        const gy = Math.random() * canvas.height;
+                        const gh = 2 + Math.random() * 8;
+                        ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * noiseAlpha})`;
+                        ctx.fillRect(0, gy, canvas.width, gh);
+                    }
+                }
+
+                // Vignette corner darkening
+                const vigGrad = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, canvas.width * 0.3, canvas.width / 2, canvas.height / 2, canvas.width * 0.65);
+                vigGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                vigGrad.addColorStop(1, 'rgba(0, 0, 0, 0.65)');
+                ctx.fillStyle = vigGrad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // 2. FPV Tactical Flight OSD Overlay
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                ctx.strokeStyle = '#4ade80';
+                ctx.lineWidth = 1.8;
+                ctx.shadowColor = '#4ade80';
+                ctx.shadowBlur = 6;
+
+                // Center Crosshair Reticle with brackets
+                ctx.beginPath();
+                ctx.moveTo(cx - 30, cy); ctx.lineTo(cx - 10, cy);
+                ctx.moveTo(cx + 10, cy); ctx.lineTo(cx + 30, cy);
+                ctx.moveTo(cx, cy - 30); ctx.lineTo(cx, cy - 10);
+                ctx.moveTo(cx, cy + 10); ctx.lineTo(cx, cy + 30);
+                ctx.stroke();
+
+                // Bracket corners
+                ctx.beginPath();
+                ctx.moveTo(cx - 50, cy - 30); ctx.lineTo(cx - 50, cy - 50); ctx.lineTo(cx - 30, cy - 50);
+                ctx.moveTo(cx + 30, cy - 50); ctx.lineTo(cx + 50, cy - 50); ctx.lineTo(cx + 50, cy - 30);
+                ctx.moveTo(cx - 50, cy + 30); ctx.lineTo(cx - 50, cy + 50); ctx.lineTo(cx - 30, cy + 50);
+                ctx.moveTo(cx + 30, cy + 50); ctx.lineTo(cx + 50, cy + 50); ctx.lineTo(cx + 50, cy + 30);
+                ctx.stroke();
+
+                // OSD Flight Data Header Bar
+                ctx.font = 'bold 13px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#4ade80';
+                const headerText = `⏱ FPV: ${remSec}С  |  🔋 22.2V  |  📶 СИГНАЛ: ${signalPct}%  |  ДИСТ: ${Math.round(distFromOp)}М`;
+                ctx.fillText(headerText, cx, 36);
+
+                // REB Jammer Alert Banner
+                if (fd.rebJammed) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.font = 'bold 15px "JetBrains Mono", monospace';
+                    ctx.shadowColor = '#ef4444';
+                    ctx.shadowBlur = 12;
+                    ctx.fillText('⚠️ ВНИМАНИЕ: КУПОЛ РЭБ БАЗЫ ПРОТИВНИКА // ПОТЕРЯ СИГНАЛА!', cx, 66);
+                }
+
+                // Bottom Mode & Action Prompt
+                ctx.font = 'bold 12px "JetBrains Mono", monospace';
+                ctx.fillStyle = '#facc15';
+                ctx.shadowColor = '#facc15';
+                ctx.shadowBlur = 4;
+                if (fd.type === 'kamikaze') {
+                    ctx.fillText('РЕЖИМ: [ТАРАННЫЙ КАМИКАДЗЕ] — НАВЕДИТЕСЬ НА ЦЕЛЬ ИЛИ ЖМИТЕ [ЛКМ / ПРОБЕЛ] ДЛЯ ПОДРЫВА', cx, canvas.height - 48);
+                } else {
+                    ctx.fillText(`РЕЖИМ: [БОМБАРДИР] — СБРОС ВОГ НА [ПРОБЕЛ / ЛКМ] (ОСТАЛОСЬ: ${fd.grenades}/3)`, cx, canvas.height - 48);
+                }
+
+                ctx.fillStyle = '#a1a1aa';
+                ctx.font = '10px "JetBrains Mono", monospace';
+                ctx.fillText('[ESC / 5] ПРЕРВАТЬ ПОЛЕТ И ВЕРНУТЬСЯ К БОЙЦУ', cx, canvas.height - 28);
+
+                ctx.restore();
+            }
 
             // Tactical Dynamic Crosshair (on desktop / mouse active)
             if (mouse.hasMoved && !joyAim.active && gameState.running && player && player.state === 'active') {
@@ -5498,18 +6010,19 @@
 
             // Tactical Bottom Hotbar
             const primW = ALL_WEAPONS[player.cls] || WEAPONS_RU.ru_assault;
-            const secW = player.side === 'red' ? WEAPONS_RU.ru_grach : WEAPONS_UA.ua_glock;
-
             const slot1 = document.getElementById('hotbarSlot1');
             const slot2 = document.getElementById('hotbarSlot2');
             const slot3 = document.getElementById('hotbarSlot3');
             const slot4 = document.getElementById('hotbarSlot4');
+            const slot5 = document.getElementById('hotbarSlot5');
             const hPrimName = document.getElementById('hotbarPrimaryName');
             const hPrimAmmo = document.getElementById('hotbarPrimaryAmmo');
             const hSecName = document.getElementById('hotbarSecondaryName');
             const hSecAmmo = document.getElementById('hotbarSecondaryAmmo');
             const hNade = document.getElementById('hotbarGrenadeCount');
             const hBand = document.getElementById('hotbarBandageCount');
+            const hudDroneBadge = document.getElementById('hudDroneBadge');
+            const hotbarDroneMode = document.getElementById('hotbarDroneMode');
 
             if (hPrimName) hPrimName.textContent = primW.name;
             if (hPrimAmmo) {
@@ -5518,44 +6031,58 @@
                 hPrimAmmo.textContent = cur + ' / ' + total;
             }
 
-            if (hSecName) hSecName.textContent = secW.name;
-            if (hSecAmmo) {
-                const cur = player.usingSecondary ? player.ammo : (player.secondaryAmmo || 0);
-                const total = secW.magSize * (player.usingSecondary ? player.mags : (player.secondaryMags || 0));
-                hSecAmmo.textContent = cur + ' / ' + total;
-            }
-
             if (hNade) hNade.textContent = (player.nades || 0) + ' шт';
             if (hBand) hBand.textContent = (player.band || 0) + ' шт';
+            if (hudDroneBadge) hudDroneBadge.textContent = player.fpvDrones || 0;
+            if (hotbarDroneMode) hotbarDroneMode.textContent = selectedDroneType === 'kamikaze' ? 'КАМИКАДЗЕ' : 'БОМБАРДИР';
 
-            if (slot1 && slot2 && slot3 && slot4) {
-                const secWepObj = ALL_WEAPONS[player.preset?.secondary] || (player.side === 'red' ? WEAPONS_RU.ru_grach : WEAPONS_UA.ua_glock);
-                const hasSecPistol = !!(player.preset?.secondary && secWepObj && secWepObj.role === 'ВТОРИЧНОЕ');
+            // Slot 2: Secondary Weapon (Strictly hidden when no secondary weapon equipped in loadout)
+            const secId = player.preset?.secondary;
+            const hasSecPistol = !!(secId && secId !== 'none' && ALL_WEAPONS[secId] && ALL_WEAPONS[secId].role === 'ВТОРИЧНОЕ');
 
-                // Conditionally show/hide slot 2 based on whether secondary pistol is equipped
+            if (slot2) {
                 if (hasSecPistol) {
                     slot2.classList.remove('hidden');
+                    slot2.style.display = 'flex';
+                    const secWepObj = ALL_WEAPONS[secId];
+                    if (hSecName) hSecName.textContent = secWepObj.name;
+                    if (hSecAmmo) {
+                        const cur = player.usingSecondary ? player.ammo : (player.secondaryAmmo || 0);
+                        const total = secWepObj.magSize * (player.usingSecondary ? player.mags : (player.secondaryMags || 0));
+                        hSecAmmo.textContent = cur + ' / ' + total;
+                    }
                 } else {
                     slot2.classList.add('hidden');
-                    if (player.usingSecondary) {
+                    slot2.style.display = 'none';
+                    if (player.usingSecondary || player.activeSlot === 2) {
                         player.usingSecondary = false;
                         player.activeSlot = 1;
                     }
                 }
+            }
 
+            if (slot1 && slot3 && slot4) {
                 const isNadeAim = (player.activeSlot === 3);
                 if (isNadeAim) {
                     slot1.className = 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-70';
-                    slot2.className = (hasSecPistol ? '' : 'hidden ') + 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-70';
+                    if (slot2) slot2.className = (hasSecPistol ? '' : 'hidden ') + 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-70';
                     slot3.className = 'tactical-btn tactical-btn-active px-2 py-1 rounded-xl flex items-center gap-1.5 border border-orange-500 cursor-pointer shadow-[0_0_16px_rgba(249,115,22,0.6)]';
-                } else if (!player.usingSecondary) {
-                    slot1.className = 'tactical-btn tactical-btn-active px-2 py-1 rounded-xl flex items-center gap-1.5 border border-emerald-500 cursor-pointer shadow-lg';
-                    slot2.className = (hasSecPistol ? '' : 'hidden ') + 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-70';
+                } else if (player.usingSecondary && hasSecPistol) {
+                    slot1.className = 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-70';
+                    if (slot2) slot2.className = 'tactical-btn tactical-btn-active px-2 py-1 rounded-xl flex items-center gap-1.5 border border-emerald-500 cursor-pointer shadow-lg';
                     slot3.className = 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg';
                 } else {
-                    slot1.className = 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-70';
-                    slot2.className = (hasSecPistol ? '' : 'hidden ') + 'tactical-btn tactical-btn-active px-2 py-1 rounded-xl flex items-center gap-1.5 border border-emerald-500 cursor-pointer shadow-lg';
+                    slot1.className = 'tactical-btn tactical-btn-active px-2 py-1 rounded-xl flex items-center gap-1.5 border border-emerald-500 cursor-pointer shadow-lg';
+                    if (slot2) slot2.className = (hasSecPistol ? '' : 'hidden ') + 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-70';
                     slot3.className = 'tactical-btn px-2 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg';
+                }
+            }
+
+            if (slot5) {
+                if (fpvDrone && fpvDrone.active) {
+                    slot5.className = 'tactical-btn tactical-btn-active relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-purple-500 cursor-pointer shadow-[0_0_16px_rgba(168,85,247,0.7)] animate-pulse';
+                } else {
+                    slot5.className = 'tactical-btn relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-purple-800/80 cursor-pointer shadow-lg';
                 }
             }
             const smkBadge = document.getElementById('hudSmokesBadge');
@@ -5735,8 +6262,18 @@
         if (btnFire) {
             btnFire.addEventListener('pointerdown', e => {
                 e.preventDefault();
+                e.stopPropagation();
                 isManualFire = true;
                 btnFire.classList.add('firing-active');
+                if (fpvDrone && fpvDrone.active) {
+                    if (fpvDrone.type === 'bomber') dropFpvGrenade();
+                    else triggerDroneDetonation(fpvDrone, false);
+                    return;
+                }
+                if (gameState.running && player && player.state === 'active' && player.activeSlot !== 3) {
+                    player.a = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
+                    shoot(player, performance.now());
+                }
             });
             const stopFire = () => {
                 isManualFire = false;
@@ -5829,19 +6366,53 @@
             if (e.code === 'KeyQ') throwSmoke(player);
             if (e.code === 'KeyG') { player.activeSlot = (player.activeSlot === 3 ? 1 : 3); updateUI(); }
             if (e.code === 'KeyE') useBandage(player);
+
+            // Spacebar shoot / drop bomb
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (fpvDrone && fpvDrone.active) {
+                    if (fpvDrone.type === 'bomber') dropFpvGrenade();
+                    else triggerDroneDetonation(fpvDrone, false);
+                    return;
+                }
+                if (gameState.running && player.state === 'active' && player.activeSlot !== 3) {
+                    player.a = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
+                    shoot(player, now);
+                }
+            }
+
+            if (e.code === 'Escape') {
+                if (fpvDrone && fpvDrone.active) {
+                    abortFpvDrone();
+                }
+            }
+
+            // [F] Interact on range: open armory modal near lane
+            if (e.code === 'KeyF') {
+                if (currentMapId === 'range' && player && Math.hypot(player.x - 430, player.y - 800) < 260) {
+                    openQuickLoadoutModal();
+                }
+            }
             
-            // Tactical Hotbar Keys [1, 2, 3, 4]
+            // Tactical Hotbar Keys [1, 2, 3, 4, 5 / X]
             if (e.code === 'Digit1') {
+                if (fpvDrone && fpvDrone.active) abortFpvDrone();
                 player.activeSlot = 1;
                 if (player.usingSecondary) toggleSecondaryWeapon(player);
                 updateUI();
             }
             if (e.code === 'Digit2') {
-                player.activeSlot = 2;
-                if (!player.usingSecondary) toggleSecondaryWeapon(player);
-                updateUI();
+                const secId = player.preset?.secondary;
+                const hasSecPistol = !!(secId && secId !== 'none' && ALL_WEAPONS[secId] && ALL_WEAPONS[secId].role === 'ВТОРИЧНОЕ');
+                if (hasSecPistol) {
+                    if (fpvDrone && fpvDrone.active) abortFpvDrone();
+                    player.activeSlot = 2;
+                    if (!player.usingSecondary) toggleSecondaryWeapon(player);
+                    updateUI();
+                }
             }
             if (e.code === 'Digit3') {
+                if (fpvDrone && fpvDrone.active) abortFpvDrone();
                 player.activeSlot = (player.activeSlot === 3 ? 1 : 3);
                 updateUI();
             }
@@ -5849,28 +6420,49 @@
                 useBandage(player);
                 updateUI();
             }
+            if (e.code === 'Digit5' || e.code === 'KeyX') {
+                launchFpvDrone();
+            }
         });
 
         // Hotbar Click Listeners
         document.getElementById('hotbarSlot1')?.addEventListener('click', () => {
             if (!player) return;
+            if (fpvDrone && fpvDrone.active) abortFpvDrone();
             player.activeSlot = 1;
             if (player.usingSecondary) toggleSecondaryWeapon(player);
             updateUI();
         });
         document.getElementById('hotbarSlot2')?.addEventListener('click', () => {
             if (!player) return;
-            player.activeSlot = 2;
-            if (!player.usingSecondary) toggleSecondaryWeapon(player);
-            updateUI();
+            const secId = player.preset?.secondary;
+            const hasSecPistol = !!(secId && secId !== 'none' && ALL_WEAPONS[secId] && ALL_WEAPONS[secId].role === 'ВТОРИЧНОЕ');
+            if (hasSecPistol) {
+                if (fpvDrone && fpvDrone.active) abortFpvDrone();
+                player.activeSlot = 2;
+                if (!player.usingSecondary) toggleSecondaryWeapon(player);
+                updateUI();
+            }
         });
         document.getElementById('hotbarSlot3')?.addEventListener('click', () => {
             if (!player) return;
+            if (fpvDrone && fpvDrone.active) abortFpvDrone();
             player.activeSlot = (player.activeSlot === 3 ? 1 : 3);
             updateUI();
         });
         document.getElementById('hotbarSlot4')?.addEventListener('click', () => {
             if (player) { useBandage(player); updateUI(); }
+        });
+        document.getElementById('hotbarSlot5')?.addEventListener('click', (e) => {
+            if (e.shiftKey || e.altKey) {
+                toggleDroneType();
+            } else {
+                launchFpvDrone();
+            }
+        });
+        document.getElementById('hotbarSlot5')?.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            toggleDroneType();
         });
 
         // Preset Builder Events
@@ -5929,6 +6521,16 @@
                 mouse.isDown = true;
                 mouse.hasMoved = true;
                 updatePointerCoord(e.clientX, e.clientY);
+                if (fpvDrone && fpvDrone.active) {
+                    if (fpvDrone.type === 'bomber') dropFpvGrenade();
+                    else triggerDroneDetonation(fpvDrone, false);
+                    return;
+                }
+                // Range armory counter interactive click
+                if (currentMapId === 'range' && Math.hypot(mouse.worldX - 430, mouse.worldY - 800) < 65) {
+                    openQuickLoadoutModal();
+                    return;
+                }
                 if (gameState.running && player && player.state === 'active') {
                     if (player.activeSlot === 3) {
                         if (player.nades > 0) {
@@ -5938,6 +6540,7 @@
                         }
                         return;
                     }
+                    player.a = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
                     shoot(player, performance.now());
                 }
             }
