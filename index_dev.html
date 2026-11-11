@@ -410,7 +410,11 @@
             <!-- Unified Tactical Equipment & Action Dock (Slots 1, 2, 3, 4 + Actions R, Q) -->
             <div id="equipmentHotbar" class="tactical-panel px-2 py-1.5 rounded-2xl flex flex-wrap items-center justify-center gap-1.5 mb-0.5 select-none pointer-events-auto border border-emerald-900/60 shadow-2xl backdrop-blur-md">
                 <!-- Slot 1: Primary Weapon -->
-                <div id="hotbarSlot1" class="tactical-btn tactical-btn-active px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-emerald-500 cursor-pointer shadow-lg" title="Основное оружие [1]">
+                <div id="hotbarSlot1" class="tactical-btn tactical-btn-active relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-emerald-500 cursor-pointer shadow-lg" title="Основное оружие [1]">
+                    <div id="resupplyTimer_slot1" class="hidden absolute -top-5 left-1/2 -translate-x-1/2 px-1 py-0.5 rounded bg-emerald-950/95 border border-emerald-400 text-emerald-300 text-[8px] font-mono font-extrabold shadow-lg z-30 flex flex-col items-center pointer-events-none whitespace-nowrap leading-none">
+                        <span id="resupplyText_slot1">+БК 1.8с</span>
+                        <div class="w-10 h-1 bg-stone-900 rounded-full mt-0.5 overflow-hidden"><div id="resupplyBar_slot1" class="h-full bg-emerald-400 transition-all duration-100" style="width: 50%;"></div></div>
+                    </div>
                     <span class="w-4 h-4 rounded bg-emerald-950 text-emerald-300 font-mono font-bold text-[9px] flex items-center justify-center border border-emerald-700/60">1</span>
                     <div class="flex flex-col text-left">
                         <span id="hotbarPrimaryName" class="text-[9px] font-extrabold text-white leading-tight">АК-74М</span>
@@ -418,7 +422,11 @@
                     </div>
                 </div>
                 <!-- Slot 2: Secondary Weapon (Strictly hidden when no secondary weapon equipped) -->
-                <div id="hotbarSlot2" class="hidden tactical-btn px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-80" style="display: none;" title="Вторичное оружие [2]">
+                <div id="hotbarSlot2" class="hidden tactical-btn relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg opacity-80" style="display: none;" title="Вторичное оружие [2]">
+                    <div id="resupplyTimer_slot2" class="hidden absolute -top-5 left-1/2 -translate-x-1/2 px-1 py-0.5 rounded bg-emerald-950/95 border border-emerald-400 text-emerald-300 text-[8px] font-mono font-extrabold shadow-lg z-30 flex flex-col items-center pointer-events-none whitespace-nowrap leading-none">
+                        <span id="resupplyText_slot2">+ПИСТ 1.8с</span>
+                        <div class="w-10 h-1 bg-stone-900 rounded-full mt-0.5 overflow-hidden"><div id="resupplyBar_slot2" class="h-full bg-emerald-400 transition-all duration-100" style="width: 50%;"></div></div>
+                    </div>
                     <span class="w-4 h-4 rounded bg-stone-900 text-stone-400 font-mono font-bold text-[9px] flex items-center justify-center border border-stone-700">2</span>
                     <div class="flex flex-col text-left">
                         <span id="hotbarSecondaryName" class="text-[9px] font-extrabold text-stone-300 leading-tight">ПЯ ГРАЧ</span>
@@ -427,6 +435,10 @@
                 </div>
                 <!-- Slot 3 / G: Frag Grenade -->
                 <div id="hotbarSlot3" class="tactical-btn relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg" title="Граната [3 / G]">
+                    <div id="resupplyTimer_slot3" class="hidden absolute -top-5 left-1/2 -translate-x-1/2 px-1 py-0.5 rounded bg-orange-950/95 border border-orange-400 text-orange-300 text-[8px] font-mono font-extrabold shadow-lg z-30 flex flex-col items-center pointer-events-none whitespace-nowrap leading-none">
+                        <span id="resupplyText_slot3">+ГРАН 1.8с</span>
+                        <div class="w-10 h-1 bg-stone-900 rounded-full mt-0.5 overflow-hidden"><div id="resupplyBar_slot3" class="h-full bg-orange-400 transition-all duration-100" style="width: 50%;"></div></div>
+                    </div>
                     <span class="w-4 h-4 rounded bg-orange-950 text-orange-400 font-mono font-bold text-[9px] flex items-center justify-center border border-orange-800">3/G</span>
                     <div class="flex flex-col text-left">
                         <span class="text-[9px] font-extrabold text-orange-300 leading-tight flex items-center gap-1"><i class="fa-solid fa-bomb text-[8px]"></i> Ф-1</span>
@@ -436,6 +448,10 @@
                 </div>
                 <!-- Slot 4 / E: Medkit / Bandage -->
                 <div id="hotbarSlot4" class="tactical-btn relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg" title="Бинт / Аптечка [4 / E]">
+                    <div id="resupplyTimer_slot4" class="hidden absolute -top-5 left-1/2 -translate-x-1/2 px-1 py-0.5 rounded bg-red-950/95 border border-red-400 text-red-300 text-[8px] font-mono font-extrabold shadow-lg z-30 flex flex-col items-center pointer-events-none whitespace-nowrap leading-none">
+                        <span id="resupplyText_slot4">+БИНТ 1.8с</span>
+                        <div class="w-10 h-1 bg-stone-900 rounded-full mt-0.5 overflow-hidden"><div id="resupplyBar_slot4" class="h-full bg-red-400 transition-all duration-100" style="width: 50%;"></div></div>
+                    </div>
                     <span class="w-4 h-4 rounded bg-red-950 text-red-400 font-mono font-bold text-[9px] flex items-center justify-center border border-red-800">4/E</span>
                     <div class="flex flex-col text-left">
                         <span class="text-[9px] font-extrabold text-red-300 leading-tight flex items-center gap-1"><i class="fa-solid fa-bandage text-[8px]"></i> БИНТ</span>
@@ -445,9 +461,13 @@
                 </div>
                 <!-- Slot 5 / X: FPV Drone -->
                 <div id="hotbarSlot5" class="tactical-btn relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-purple-800/80 cursor-pointer shadow-lg" title="FPV-Дрон [5 / X] (Клик: запуск, ПКМ/двойной клик: смена режима)">
+                    <div id="resupplyTimer_slot5" class="hidden absolute -top-5 left-1/2 -translate-x-1/2 px-1 py-0.5 rounded bg-purple-950/95 border border-purple-400 text-purple-300 text-[8px] font-mono font-extrabold shadow-lg z-30 flex flex-col items-center pointer-events-none whitespace-nowrap leading-none">
+                        <span id="resupplyText_slot5">+ДРОН 1.8с</span>
+                        <div class="w-10 h-1 bg-stone-900 rounded-full mt-0.5 overflow-hidden"><div id="resupplyBar_slot5" class="h-full bg-purple-400 transition-all duration-100" style="width: 50%;"></div></div>
+                    </div>
                     <span class="w-4 h-4 rounded bg-purple-950 text-purple-300 font-mono font-bold text-[9px] flex items-center justify-center border border-purple-700/60">5/X</span>
                     <div class="flex flex-col text-left">
-                        <span id="hotbarDroneName" class="text-[9px] font-extrabold text-purple-300 leading-tight flex items-center gap-1"><i class="fa-solid fa-helicopter text-[8px]"></i> FPV</span>
+                        <span id="hotbarDroneName" class="text-[9px] font-extrabold text-purple-300 leading-tight flex items-center gap-1"><i class="fa-solid fa-helicopter text-[8px]"></i> БПЛА</span>
                         <span id="hotbarDroneMode" class="text-[8px] text-stone-300 font-mono leading-none">КАМИКАДЗЕ</span>
                     </div>
                     <span id="hudDroneBadge" class="absolute -top-1.5 -right-1.5 oneui-badge px-1 text-[8px] font-extrabold rounded-full bg-purple-600 text-white border border-purple-400">1</span>
@@ -461,6 +481,10 @@
                 </button>
                 <!-- Action: Smoke Grenade [Q] -->
                 <button id="btnActionSmoke" class="tactical-btn relative px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-stone-700 cursor-pointer shadow-lg text-sky-300 hover:text-white" title="Дымовая граната [Q]">
+                    <div id="resupplyTimer_smoke" class="hidden absolute -top-5 left-1/2 -translate-x-1/2 px-1 py-0.5 rounded bg-sky-950/95 border border-sky-400 text-sky-300 text-[8px] font-mono font-extrabold shadow-lg z-30 flex flex-col items-center pointer-events-none whitespace-nowrap leading-none">
+                        <span id="resupplyText_smoke">+ДЫМ 1.8с</span>
+                        <div class="w-10 h-1 bg-stone-900 rounded-full mt-0.5 overflow-hidden"><div id="resupplyBar_smoke" class="h-full bg-sky-400 transition-all duration-100" style="width: 50%;"></div></div>
+                    </div>
                     <span class="w-4 h-4 rounded bg-sky-950 text-sky-300 font-mono font-bold text-[9px] flex items-center justify-center border border-sky-700/60">Q</span>
                     <span class="text-[9px] font-extrabold leading-tight flex items-center gap-1"><i class="fa-solid fa-smog text-[9px]"></i> ДЫМ</span>
                     <span id="hudSmokesBadge" class="absolute -top-1.5 -right-1.5 oneui-badge px-1 text-[8px] font-extrabold rounded-full bg-sky-600 text-white border border-sky-400">2</span>
@@ -1068,11 +1092,21 @@
                         </div>
                     </div>
 
-                    <!-- Secondary Weapon & Armor -->
-                    <div class="grid grid-cols-2 gap-2">
+                    <!-- Secondary Weapon, Grenades & Armor -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <div>
                             <label class="text-[9px] font-bold text-stone-400 uppercase block mb-1">ПИСТОЛЕТ (ВТОРИЧНОЕ):</label>
                             <select id="builderSecondary" class="w-full bg-stone-950 border border-stone-700 rounded-lg p-1.5 text-white text-[11px] focus:border-emerald-500 outline-none">
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[9px] font-bold text-stone-400 uppercase block mb-1">ГРАНАТЫ Ф-1:</label>
+                            <select id="builderGrenadeCount" class="w-full bg-stone-950 border border-stone-700 rounded-lg p-1.5 text-white text-[11px] focus:border-emerald-500 outline-none">
+                                <option value="0">0 шт (₽ 0)</option>
+                                <option value="1">1 шт (+₽ 200)</option>
+                                <option value="2" selected>2 шт (+₽ 400)</option>
+                                <option value="3">3 шт (+₽ 600)</option>
+                                <option value="4">4 шт (+₽ 800)</option>
                             </select>
                         </div>
                         <div>
@@ -1713,8 +1747,8 @@
                 scope_4x: { name: 'Оптика 4X', cost: 3000, zoomMult: 1.45, spreadMult: 0.65, badge: 'ОПТИКА 4X' }
             },
             laser: {
-                none: { name: 'Нет', cost: 0, hasLaser: false, badge: 'БЕЗ ЛЦУ' },
-                laser: { name: 'ЛЦУ Тактический', cost: 1800, hasLaser: true, spreadMult: 0.75, badge: 'ЛЦУ' }
+                none: { name: 'Нет', cost: 0, spreadMult: 1.0, hasLaser: false, badge: 'БЕЗ ЛЦУ' },
+                laser: { name: 'ЛЦУ Тактический', cost: 1800, spreadMult: 0.75, hasLaser: true, badge: 'ЛЦУ' }
             },
             armor: {
                 light: { name: 'Легкий 50 AP', ap: 50, speedMult: 1.06, cost: 1200, badge: '50 AP' },
@@ -2162,6 +2196,7 @@
             if (typeof updateMapSelectionActive === 'function') {
                 updateMapSelectionActive(mapId);
             }
+            if (mapId === 'range') { zoomScale = 0.85; } else { zoomScale = 1.0; }
             updateSummaryUI();
         }
 
@@ -2195,11 +2230,12 @@
                 mouse.x = (clientX - rect.left) * (canvas.width / (rect.width || 1));
                 mouse.y = (clientY - rect.top) * (canvas.height / (rect.height || 1));
             }
-            if (player) {
+            const camTarget = (typeof fpvDrone !== 'undefined' && fpvDrone && fpvDrone.active) ? fpvDrone : player;
+            if (camTarget) {
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
-                mouse.worldX = player.x + (mouse.x - centerX) / zoomScale;
-                mouse.worldY = player.y + (mouse.y - centerY) / zoomScale;
+                mouse.worldX = camTarget.x + (mouse.x - centerX) / zoomScale;
+                mouse.worldY = camTarget.y + (mouse.y - centerY) / zoomScale;
             } else {
                 mouse.worldX = mouse.x + cam.x;
                 mouse.worldY = mouse.y + cam.y;
@@ -2283,16 +2319,16 @@
             reactionBestMs: null,
             // Moving Target Dummies (Strafing back and forth at 15m, 30m, 50m)
             dummies: [
-                { id: 'd1', x: 820,  y: 700, minY: 520, maxY: 1080, spd: 1.8, dir: 1, hp: 100, maxHp: 100, distLabel: '15 М', hitFlash: 0, downUntil: 0 },
-                { id: 'd2', x: 1380, y: 840, minY: 480, maxY: 1120, spd: 2.5, dir: -1, hp: 100, maxHp: 100, distLabel: '30 М', hitFlash: 0, downUntil: 0 },
-                { id: 'd3', x: 1940, y: 720, minY: 440, maxY: 1160, spd: 3.2, dir: 1, hp: 100, maxHp: 100, distLabel: '50 М', hitFlash: 0, downUntil: 0 }
+                { id: 'd1', x: 680,  y: 700, minY: 520, maxY: 1080, spd: 1.8, dir: 1, hp: 100, maxHp: 100, distLabel: '15 М', hitFlash: 0, downUntil: 0 },
+                { id: 'd2', x: 980,  y: 840, minY: 480, maxY: 1120, spd: 2.5, dir: -1, hp: 100, maxHp: 100, distLabel: '30 М', hitFlash: 0, downUntil: 0 },
+                { id: 'd3', x: 1350, y: 720, minY: 440, maxY: 1160, spd: 3.2, dir: 1, hp: 100, maxHp: 100, distLabel: '50 М', hitFlash: 0, downUntil: 0 }
             ],
             // Steel Reactive Gongs
             gongs: [
-                { x: 640,  y: 500,  r: 20, label: '10 М (ГОНГ)', lastHit: 0 },
-                { x: 640,  y: 1100, r: 20, label: '10 М (ГОНГ)', lastHit: 0 },
-                { x: 1060, y: 250,  r: 22, label: 'РИКОШЕТ ГРАНАТЫ', lastHit: 0 },
-                { x: 2420, y: 800,  r: 28, label: '80 М (СНАЙПЕР)', lastHit: 0 }
+                { x: 620,  y: 500,  r: 20, label: '10 М (ГОНГ)', lastHit: 0 },
+                { x: 620,  y: 1100, r: 20, label: '10 М (ГОНГ)', lastHit: 0 },
+                { x: 950,  y: 250,  r: 22, label: 'РИКОШЕТ ГРАНАТЫ', lastHit: 0 },
+                { x: 1550, y: 800,  r: 28, label: '50 М (СНАЙПЕР)', lastHit: 0 }
             ]
         };
 
@@ -2453,7 +2489,16 @@
                 if (lineIntersects(x1, y1, x2, y2, wr.x - wr.w/2, wr.y - wr.h/2, wr.w, wr.h)) return false;
             }
             for (const s of smokes) {
-                if (Math.hypot((x1 + x2)/2 - s.x, (y1 + y2)/2 - s.y) < s.r * 0.9) return false;
+                const density = s.density !== undefined ? s.density : 0.8;
+                if (density > 0.35) {
+                    const dx = x2 - x1, dy = y2 - y1, lenSq = dx * dx + dy * dy;
+                    if (lenSq > 0) {
+                        const t = Math.max(0, Math.min(1, ((s.x - x1) * dx + (s.y - y1) * dy) / lenSq));
+                        const nearX = x1 + t * dx;
+                        const nearY = y1 + t * dy;
+                        if (Math.hypot(s.x - nearX, s.y - nearY) < s.r * 0.95) return false;
+                    }
+                }
             }
             let foliageHits = 0;
             for (const tr of TREES) {
@@ -2678,24 +2723,28 @@
                 const muz = ATTACHMENTS.muzzle[u.attachments.muzzle];
                 const opt = ATTACHMENTS.optic[u.attachments.optic];
                 const las = ATTACHMENTS.laser[u.attachments.laser];
-                if (muz) attachSpreadMult *= muz.spreadMult;
-                if (opt) attachSpreadMult *= opt.spreadMult;
-                if (las) attachSpreadMult *= las.spreadMult;
+                if (muz && typeof muz.spreadMult === 'number') attachSpreadMult *= muz.spreadMult;
+                if (opt && typeof opt.spreadMult === 'number') attachSpreadMult *= opt.spreadMult;
+                if (las && typeof las.spreadMult === 'number') attachSpreadMult *= las.spreadMult;
             }
-            const spreadFactor = u.isPlayer ? attachSpreadMult : diffPreset.spreadMult;
+            if (isNaN(attachSpreadMult) || attachSpreadMult <= 0) attachSpreadMult = 1.0;
+            const spreadFactor = u.isPlayer ? attachSpreadMult : (diffPreset.spreadMult || 1.0);
             const spreadA = u.a + (Math.random() - 0.5) * (w.spread || 0.04) * spreadFactor;
 
             const muzzleDist = 26;
             const muzzleX = u.x + Math.cos(u.a) * muzzleDist;
             const muzzleY = u.y + Math.sin(u.a) * muzzleDist;
+            const bulletSpeed = (typeof w.speed === 'number' && !isNaN(w.speed)) ? w.speed : 21.0;
+            const bVx = Math.cos(spreadA) * bulletSpeed;
+            const bVy = Math.sin(spreadA) * bulletSpeed;
 
             bbs.push({
                 x: muzzleX,
                 y: muzzleY,
                 prevX: muzzleX,
                 prevY: muzzleY,
-                vx: Math.cos(spreadA) * (w.speed || 21.0),
-                vy: Math.sin(spreadA) * (w.speed || 21.0),
+                vx: isNaN(bVx) ? (Math.cos(u.a) * 21.0) : bVx,
+                vy: isNaN(bVy) ? (Math.sin(u.a) * 21.0) : bVy,
                 side: u.side,
                 shooter: u,
                 isP: u.isPlayer,
@@ -2704,7 +2753,7 @@
                 pierceChance: w.pierceChance || 0.0,
                 bleedChance: w.bleedChance || 0.25,
                 tracerCol: w.tracerCol || '#fde047',
-                life: Math.floor((w.range || 480) / (w.speed || 21.0)),
+                life: Math.floor((w.range || 480) / bulletSpeed),
                 isRocket: !!w.isRocket,
                 blastRadius: w.blastRadius || 0
             });
@@ -2758,6 +2807,8 @@
             if (u.mags <= 0) {
                 if (!u.isPlayer) {
                     u.mags = w.mags;
+                } else if (currentMapId === 'range') {
+                    u.mags = 99;
                 } else {
                     if (!u.lastEmptyNoticeTime || now - u.lastEmptyNoticeTime > 1200) {
                         u.lastEmptyNoticeTime = now;
@@ -2780,16 +2831,41 @@
         function throwSmoke(u) {
             if (u.state !== 'active' || u.smokes <= 0) return;
             u.smokes--;
-            const d = 160;
-            smokes.push({
-                x: u.x + Math.cos(u.a) * d,
-                y: u.y + Math.sin(u.a) * d,
-                r: 15,
-                maxR: 90,
-                life: 380
+
+            let targetX, targetY;
+            if (u.isPlayer && mouse.worldX !== undefined && mouse.worldY !== undefined) {
+                const curDist = Math.hypot(mouse.worldX - u.x, mouse.worldY - u.y);
+                const throwDist = Math.max(60, Math.min(220, curDist));
+                const throwA = Math.atan2(mouse.worldY - u.y, mouse.worldX - u.x);
+                targetX = u.x + Math.cos(throwA) * throwDist;
+                targetY = u.y + Math.sin(throwA) * throwDist;
+            } else {
+                const d = 150;
+                targetX = u.x + Math.cos(u.a) * d;
+                targetY = u.y + Math.sin(u.a) * d;
+            }
+
+            // Ballistic Smoke Grenade Canister Flight
+            nades.push({
+                isSmokeCanister: true,
+                x: u.x,
+                y: u.y,
+                startX: u.x,
+                startY: u.y,
+                tx: targetX,
+                ty: targetY,
+                path: [{ x: u.x, y: u.y }, { x: targetX, y: targetY }],
+                pathIdx: 0,
+                segProgress: 0,
+                landed: false,
+                fuse: 55, // flight + ~0.5s before cloud deployment
+                rot: 0,
+                side: u.side,
+                isPlayer: u.isPlayer
             });
+
             if (u.isPlayer) {
-                spawnText(u.x, u.y - 20, 'ДЫМ', '#7dd3fc');
+                spawnText(u.x, u.y - 20, 'ДЫМОВАЯ ГРАНАТА', '#7dd3fc');
                 updateUI();
             }
         }
@@ -2993,6 +3069,12 @@
             const secSelect = document.getElementById('builderSecondary');
             if (secSelect) {
                 secSelect.innerHTML = '';
+                // Option to opt-out of secondary weapon
+                const noOpt = document.createElement('option');
+                noOpt.value = 'none';
+                noOpt.textContent = 'НЕТ / БЕЗ ПИСТОЛЕТА (₽ 0)';
+                secSelect.appendChild(noOpt);
+
                 const secList = side === 'red' ? cls.ru_secondaries : cls.ua_secondaries;
                 secList.forEach(sk => {
                     const sw = ALL_WEAPONS[sk];
@@ -3037,13 +3119,15 @@
             const wCost = BASE_WEAPON_PRICES[wKey] || 4000;
             const magObj = cls.magazines.find(m => m.id === magKey) || cls.magazines[0];
             const ammoObj = cls.ammo.find(a => a.id === ammoKey) || cls.ammo[0];
-            const secCost = BASE_WEAPON_PRICES[secKey] || 800;
+            const secCost = (secKey && secKey !== 'none') ? (BASE_WEAPON_PRICES[secKey] || 800) : 0;
+            const nadeCount = parseInt(document.getElementById('builderGrenadeCount')?.value ?? 2, 10);
+            const nadeCost = nadeCount * 200;
             const mCost = ATTACHMENTS.muzzle[muzKey]?.cost || 0;
             const oCost = ATTACHMENTS.optic[optKey]?.cost || 0;
             const lCost = ATTACHMENTS.laser[lasKey]?.cost || 0;
             const aCost = ATTACHMENTS.armor[armKey]?.cost || 2200;
 
-            const total = wCost + (magObj ? magObj.cost : 0) + (ammoObj ? ammoObj.cost : 0) + secCost + mCost + oCost + lCost + aCost;
+            const total = wCost + (magObj ? magObj.cost : 0) + (ammoObj ? ammoObj.cost : 0) + secCost + nadeCost + mCost + oCost + lCost + aCost;
             const costText = document.getElementById('builderCostText');
             const costBar = document.getElementById('builderCostBar');
             const warning = document.getElementById('builderBudgetWarning');
@@ -3085,7 +3169,8 @@
             const side = document.getElementById('builderPresetSide')?.value || gameState.playerSide;
             const cls = builderSelectedClass || 'assault';
             const weapon = document.getElementById('builderWeapon')?.value || (side === 'red' ? 'ru_assault' : 'ua_assault');
-            const secondary = document.getElementById('builderSecondary')?.value || (side === 'red' ? 'ru_grach' : 'ua_glock');
+            const secondary = document.getElementById('builderSecondary')?.value || 'none';
+            const grenades = parseInt(document.getElementById('builderGrenadeCount')?.value ?? 2, 10);
             const muzzle = document.getElementById('builderMuzzle')?.value || 'none';
             const optic = document.getElementById('builderOptic')?.value || 'none';
             const laser = document.getElementById('builderLaser')?.value || 'none';
@@ -3098,6 +3183,7 @@
                 name: name,
                 weapon: weapon,
                 secondary: secondary,
+                grenades: grenades,
                 muzzle: muzzle,
                 optic: optic,
                 laser: laser,
@@ -3152,7 +3238,7 @@
                 player.band = 99;
                 player.fpvDrones = 99;
             } else {
-                player.nades = preset.grenades || w.nades || 2;
+                player.nades = (preset.grenades !== undefined) ? preset.grenades : (w.nades || 2);
                 player.smokes = w.smokes || 2;
                 player.band = w.band || 3;
                 player.fpvDrones = 1;
@@ -3170,13 +3256,31 @@
             if (!modal || !container) return;
 
             if (fLabel) {
-                fLabel.textContent = gameState.playerSide === 'red' ? 'ВС РФ' : 'ВСУ';
-                fLabel.className = gameState.playerSide === 'red' ? 'font-bold text-red-400' : 'font-bold text-yellow-400';
+                fLabel.innerHTML = `
+                    <div class="flex items-center justify-between w-full">
+                        <span>ФРАКЦИЯ: <b class="${gameState.playerSide === 'red' ? 'text-red-400' : 'text-yellow-400'}">${gameState.playerSide === 'red' ? 'ВС РФ' : 'ВСУ'}</b></span>
+                        <button id="btnQuickOpenBuilder" class="px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300 border border-emerald-500/60 text-[10px] font-bold hover:bg-emerald-800 transition">
+                            <i class="fa-solid fa-screwdriver-wrench mr-1"></i>СОЗДАТЬ СВОЙ СЕТАП
+                        </button>
+                    </div>
+                `;
+                document.getElementById('btnQuickOpenBuilder')?.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    modal.classList.add('hidden');
+                    openPresetBuilder();
+                });
             }
             container.innerHTML = '';
 
-            const presets = getAllPresetsForSide(gameState.playerSide);
-            presets.forEach(preset => {
+            const allPresets = getAllPresetsForSide(gameState.playerSide);
+            // Display custom player presets FIRST so they are immediately accessible!
+            const sortedPresets = [...allPresets].sort((a, b) => {
+                if (!a.isDefault && b.isDefault) return -1;
+                if (a.isDefault && !b.isDefault) return 1;
+                return 0;
+            });
+
+            sortedPresets.forEach(preset => {
                 const w = ALL_WEAPONS[preset.weapon] || WEAPONS_RU.ru_assault;
                 const hasSec = preset.secondary && preset.secondary !== 'none' && ALL_WEAPONS[preset.secondary];
                 const sec = hasSec ? ALL_WEAPONS[preset.secondary] : null;
@@ -3184,28 +3288,29 @@
                 const isActive = (selectedPresetId === preset.id) || (player && player.preset && player.preset.id === preset.id);
 
                 const card = document.createElement('div');
-                card.className = `tactical-btn p-3 rounded-xl cursor-pointer flex items-center justify-between gap-3 border ${isActive ? 'tactical-btn-active border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'border-stone-800 hover:border-stone-600'}`;
+                card.className = `tactical-btn p-3 rounded-xl cursor-pointer flex items-center justify-between gap-3 border ${isActive ? 'tactical-btn-active border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)] bg-emerald-950/40' : (!preset.isDefault ? 'border-amber-600/70 bg-amber-950/20 hover:border-amber-400 shadow-md' : 'border-stone-800 hover:border-stone-600')}`;
 
                 const secText = sec ? sec.name : 'Без пистолета';
                 const muzName = ATTACHMENTS.muzzle[preset.muzzle]?.name || 'Штат';
                 const optName = ATTACHMENTS.optic[preset.optic]?.name || 'Механика';
+                const nadeCount = preset.grenades !== undefined ? preset.grenades : 2;
 
                 card.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-stone-950 flex items-center justify-center border border-stone-800 text-stone-300">
+                        <div class="w-10 h-10 rounded-lg bg-stone-950 flex items-center justify-center border ${!preset.isDefault ? 'border-amber-500/70 text-amber-300' : 'border-stone-800 text-stone-300'}">
                             ${getWeaponSilhouetteSvg(preset.weapon, 'w-8 h-4')}
                         </div>
                         <div class="flex flex-col text-left">
                             <div class="flex items-center gap-2">
                                 <span class="font-extrabold text-xs text-white">${preset.name}</span>
-                                ${!preset.isDefault ? '<span class="text-[8px] px-1 rounded bg-amber-950 text-amber-300 border border-amber-600/50 font-bold">КАСТОМ</span>' : ''}
+                                ${!preset.isDefault ? '<span class="text-[8px] px-1.5 py-0.5 rounded bg-amber-900/90 text-amber-300 border border-amber-500 font-black">МОЙ КАСТОМ</span>' : '<span class="text-[8px] px-1 rounded bg-stone-800 text-stone-400 font-mono">БАЗОВЫЙ</span>'}
                                 ${isActive ? '<span class="text-[8px] px-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-600/50 font-bold">АКТИВЕН</span>' : ''}
                             </div>
                             <div class="text-[10px] text-stone-300 font-mono mt-0.5">
-                                <b class="text-emerald-400">${w.name}</b> • <span class="text-sky-300">${arm.name}</span> • <span class="text-yellow-400">${secText}</span>
+                                <b class="text-emerald-400">${w.name}</b> • <span class="text-sky-300">${arm.name}</span> • <span class="text-yellow-400">${secText}</span> • <span class="text-orange-400">${nadeCount} гран.</span>
                             </div>
                             <div class="text-[9px] text-stone-400">
-                                Мод: ${optName} / ${muzName}
+                                Прицел: ${optName} | ДТК: ${muzName}
                             </div>
                         </div>
                     </div>
@@ -3719,25 +3824,33 @@
         }
 
         let fpvDrone = null;
-        let selectedDroneType = 'kamikaze'; // 'kamikaze' | 'bomber'
+        let selectedDroneType = 'kamikaze'; // 'kamikaze' | 'bomber' | 'recon'
 
         function toggleDroneType() {
-            selectedDroneType = (selectedDroneType === 'kamikaze') ? 'bomber' : 'kamikaze';
+            if (selectedDroneType === 'kamikaze') selectedDroneType = 'bomber';
+            else if (selectedDroneType === 'bomber') selectedDroneType = 'recon';
+            else selectedDroneType = 'kamikaze';
+
             const modeEl = document.getElementById('hotbarDroneMode');
-            if (modeEl) modeEl.textContent = selectedDroneType === 'kamikaze' ? 'КАМИКАДЗЕ' : 'БОМБАРДИР';
+            let label = 'ТАРАННЫЙ КАМИКАДЗЕ';
+            if (selectedDroneType === 'bomber') label = 'БОМБАРДИР (3 ВОГ)';
+            else if (selectedDroneType === 'recon') label = 'РАЗВЕДКА (60 СЕК)';
+            if (modeEl) {
+                modeEl.textContent = selectedDroneType === 'kamikaze' ? 'КАМИКАДЗЕ' : (selectedDroneType === 'bomber' ? 'БОМБАРДИР' : 'РАЗВЕДКА');
+            }
             if (player) {
-                spawnText(player.x, player.y - 25, 'FPV: ' + (selectedDroneType === 'kamikaze' ? 'КАМИКАДЗЕ' : 'БОМБАРДИР (3 ВОГ)'), '#c084fc');
+                spawnText(player.x, player.y - 25, 'БПЛА: ' + label, '#c084fc');
             }
         }
 
         function launchFpvDrone() {
             if (!gameState.running || !player || player.state !== 'active') return;
             if (fpvDrone && fpvDrone.active) {
-                abortFpvDrone();
+                abortFpvDrone(fpvDrone.type === 'recon');
                 return;
             }
             if ((player.fpvDrones || 0) <= 0 && currentMapId !== 'range') {
-                spawnText(player.x, player.y - 25, 'НЕТ FPV ДРОНОВ', '#ef4444');
+                spawnText(player.x, player.y - 25, 'НЕТ БПЛА В НАЛИЧИИ', '#ef4444');
                 audio.playDryFire();
                 return;
             }
@@ -3745,6 +3858,19 @@
             if (currentMapId !== 'range') player.fpvDrones = Math.max(0, (player.fpvDrones || 1) - 1);
 
             const now = performance.now();
+            let flightDur = 10000;
+            let droneSpeed = 8.5;
+            let flyMsg = 'FPV КАМИКАДЗЕ В ВОЗДУХЕ! [10 СЕК]';
+            if (selectedDroneType === 'bomber') {
+                flightDur = 15000;
+                droneSpeed = 6.8;
+                flyMsg = 'FPV БОМБАРДИР В ВОЗДУХЕ! [15 СЕК]';
+            } else if (selectedDroneType === 'recon') {
+                flightDur = 60000; // 1 минута полета
+                droneSpeed = 6.2;
+                flyMsg = 'БПЛА РАЗВЕДЧИК В НЕБЕ! [60 СЕК]';
+            }
+
             fpvDrone = {
                 active: true,
                 type: selectedDroneType,
@@ -3753,25 +3879,36 @@
                 x: player.x + Math.cos(player.a) * 36,
                 y: player.y + Math.sin(player.a) * 36,
                 a: player.a,
-                speed: 7.6,
-                turnSpeed: 0.08,
+                speed: droneSpeed,
+                turnSpeed: 0.14,
                 launchTime: now,
-                duration: 10000, // 10 секунд
-                grenades: 3, // для бомбардира
+                duration: flightDur,
+                grenades: 3,
                 lastDropTime: 0,
-                state: 'flying', // 'flying' | 'falling' | 'exploded'
+                state: 'flying', // 'flying' | 'falling' | 'exploded' | 'returned'
                 fallStartTime: 0,
                 rebJammed: false,
                 rebTime: 0
             };
 
-            spawnText(player.x, player.y - 25, 'FPV В ВОЗДУХЕ! [10 СЕК]', '#c084fc');
+            spawnText(player.x, player.y - 25, flyMsg, '#c084fc');
             audio.playShot('cqb');
             updateUI();
         }
 
-        function abortFpvDrone() {
+        function abortFpvDrone(safeReturn = false) {
             if (!fpvDrone || fpvDrone.state !== 'flying') return;
+            if (fpvDrone.type === 'recon' || safeReturn) {
+                fpvDrone.active = false;
+                fpvDrone.state = 'returned';
+                spawnText(fpvDrone.x, fpvDrone.y - 20, 'БПЛА ВЕРНУЛСЯ НА БАЗУ', '#38bdf8');
+                setTimeout(() => {
+                    fpvDrone = null;
+                    snapCameraToPlayer();
+                    updateUI();
+                }, 400);
+                return;
+            }
             fpvDrone.state = 'falling';
             fpvDrone.fallStartTime = performance.now();
             spawnText(fpvDrone.x, fpvDrone.y - 20, 'СИГНАЛ ПРЕРВАН', '#f87171');
@@ -3801,6 +3938,10 @@
 
         function dropFpvGrenade() {
             if (!fpvDrone || fpvDrone.state !== 'flying') return;
+            if (fpvDrone.type === 'recon') {
+                abortFpvDrone(true);
+                return;
+            }
             if (fpvDrone.type !== 'bomber') {
                 triggerDroneDetonation(fpvDrone, false);
                 return;
@@ -3810,20 +3951,20 @@
 
             fpvDrone.grenades--;
             fpvDrone.lastDropTime = now;
-            spawnText(fpvDrone.x, fpvDrone.y - 20, 'ВОГ СБРОШЕН! (' + fpvDrone.grenades + '/3)', '#facc15');
+            spawnText(fpvDrone.x, fpvDrone.y - 20, 'ВОГ СБРОШЕН ПОД СЕБЯ! (' + fpvDrone.grenades + '/3)', '#facc15');
 
             nades.push({
                 x: fpvDrone.x,
                 y: fpvDrone.y,
                 startX: fpvDrone.x,
                 startY: fpvDrone.y,
-                tx: fpvDrone.x + (Math.random() - 0.5) * 12,
-                ty: fpvDrone.y + (Math.random() - 0.5) * 12,
+                tx: fpvDrone.x,
+                ty: fpvDrone.y,
                 path: [{ x: fpvDrone.x, y: fpvDrone.y }, { x: fpvDrone.x, y: fpvDrone.y }],
                 pathIdx: 0,
                 segProgress: 0,
                 landed: false,
-                fuse: 45, // ~0.75 sec vertical drop
+                fuse: 36, // Vertical gravity drop straight down
                 rot: 0,
                 side: fpvDrone.side,
                 isPlayer: true
@@ -3834,18 +3975,19 @@
         function updatePhysics(now) {
             if (!player) return;
 
-            // Recalculate mouse world coordinates every frame relative to player position
-            if (canvas && player) {
+            // Recalculate mouse world coordinates every frame relative to camera target
+            if (canvas) {
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
-                mouse.worldX = player.x + (mouse.x - centerX) / zoomScale;
-                mouse.worldY = player.y + (mouse.y - centerY) / zoomScale;
+                const targetUnit = (fpvDrone && fpvDrone.active) ? fpvDrone : player;
+                mouse.worldX = targetUnit.x + (mouse.x - centerX) / zoomScale;
+                mouse.worldY = targetUnit.y + (mouse.y - centerY) / zoomScale;
             }
 
-            // Real-time continuous Grenade throw distance update while LMB is held
+            // Real-time continuous Grenade throw distance update while LMB is held (clamped to realistic 220px)
             if (player.activeSlot === 3 && player.nadeCharging) {
                 const curDist = Math.hypot(mouse.worldX - player.x, mouse.worldY - player.y);
-                player.nadeChargeDist = Math.max(70, Math.min(500, curDist));
+                player.nadeChargeDist = Math.max(60, Math.min(220, curDist));
             }
 
             // Update FPV Drone Flight, Timers and REB Domes
@@ -3855,7 +3997,7 @@
                 const remFlightTime = Math.max(0, d.duration - elapsed);
 
                 // Check Enemy REB Dome Protection around Enemy Base (radius: 260px)
-                // Protects bases against spawn camping with FPV drones!
+                // Protects bases against spawn camping with FPV drones! (Handled in code, invisible to players)
                 const enemyBaseX = (d.side === 'red') ? 180 : (WORLD_W - 180);
                 const enemyBaseY = WORLD_H / 2;
                 const distToEnemyBase = Math.hypot(d.x - enemyBaseX, d.y - enemyBaseY);
@@ -3872,22 +4014,35 @@
                 }
 
                 if (d.state === 'flying') {
-                    // Fly towards mouse cursor or aim direction
-                    let steerAngle = d.a;
-                    if (mouse.worldX !== undefined && mouse.worldY !== undefined) {
-                        steerAngle = Math.atan2(mouse.worldY - d.y, mouse.worldX - d.x);
+                    // Flight controls exclusively via WASD / Keyboard / JoyMove (smooth turning, NO wild mouse-angle spinning!)
+                    let dmx = 0, dmy = 0;
+                    if (keys['KeyW'] || keys['ArrowUp']) dmy -= 1;
+                    if (keys['KeyS'] || keys['ArrowDown']) dmy += 1;
+                    if (keys['KeyA'] || keys['ArrowLeft']) dmx -= 1;
+                    if (keys['KeyD'] || keys['ArrowRight']) dmx += 1;
+                    if (joyMove.active) {
+                        dmx += joyMove.x;
+                        dmy += joyMove.y;
                     }
-                    let aDiff = steerAngle - d.a;
-                    while (aDiff < -Math.PI) aDiff += Math.PI * 2;
-                    while (aDiff > Math.PI) aDiff -= Math.PI * 2;
-                    d.a += aDiff * d.turnSpeed;
 
-                    // Fly forwards over obstacles (no collision with walls/trenches)
-                    d.x += Math.cos(d.a) * d.speed;
-                    d.y += Math.sin(d.a) * d.speed;
+                    const inputLen = Math.hypot(dmx, dmy);
+                    if (inputLen > 0.08) {
+                        const targetAngle = Math.atan2(dmy, dmx);
+                        let aDiff = targetAngle - d.a;
+                        while (aDiff < -Math.PI) aDiff += Math.PI * 2;
+                        while (aDiff > Math.PI) aDiff -= Math.PI * 2;
+                        d.a += aDiff * 0.14; // smooth non-jittery rotation
+
+                        const curSpeed = d.speed * Math.min(1.0, inputLen);
+                        d.x += Math.cos(d.a) * curSpeed;
+                        d.y += Math.sin(d.a) * curSpeed;
+                    }
+
+                    d.x = Math.max(30, Math.min(WORLD_W - 30, d.x));
+                    d.y = Math.max(30, Math.min(WORLD_H - 30, d.y));
 
                     // Drone rotor wash smoke puff
-                    if (Math.random() < 0.3) {
+                    if (Math.random() < 0.28) {
                         effects.push({
                             type: 'smoke_puff',
                             x: d.x - Math.cos(d.a) * 12 + (Math.random() - 0.5) * 8,
@@ -3898,18 +4053,22 @@
                         });
                     }
 
-                    // Check timeout (10 seconds flight time limit)
+                    // Check timeout (battery drained)
                     if (remFlightTime <= 0) {
-                        d.state = 'falling';
-                        d.fallStartTime = now;
-                        spawnText(d.x, d.y - 25, 'БАТАРЕЯ РАЗРЯЖЕНА - ПАДЕНИЕ!', '#fb923c');
+                        if (d.type === 'recon') {
+                            abortFpvDrone(true);
+                        } else {
+                            d.state = 'falling';
+                            d.fallStartTime = now;
+                            spawnText(d.x, d.y - 25, 'БАТАРЕЯ РАЗРЯЖЕНА - ПАДЕНИЕ!', '#fb923c');
+                        }
                     }
 
-                    // Kamikaze target impact detection
+                    // Kamikaze target impact detection (ram enemy to detonate!)
                     if (d.type === 'kamikaze') {
                         const enemies = bots.filter(b => b.side !== d.side && b.state === 'active');
                         for (const b of enemies) {
-                            if (Math.hypot(b.x - d.x, b.y - d.y) < 32) {
+                            if (Math.hypot(b.x - d.x, b.y - d.y) < 34) {
                                 triggerDroneDetonation(d, true);
                                 break;
                             }
@@ -3928,9 +4087,9 @@
                     }
                 }
 
-                // Smooth camera follows FPV drone
-                cam.x += (d.x - canvas.width / 2 - cam.x) * 0.18;
-                cam.y += (d.y - canvas.height / 2 - cam.y) * 0.18;
+                // Strict camera tracking following FPV drone
+                cam.x += (d.x - canvas.width / 2 - cam.x) * 0.35;
+                cam.y += (d.y - canvas.height / 2 - cam.y) * 0.35;
             }
 
             // Process reload completion for all units
@@ -4060,7 +4219,7 @@
                     player.mags = w.mags;
                     player.band = (currentMapId === 'range') ? 99 : (w.band || 3);
                     player.smokes = (currentMapId === 'range') ? 99 : (w.smokes || 2);
-                    player.nades = (currentMapId === 'range') ? 99 : (w.nades || 2);
+                    player.nades = (currentMapId === 'range') ? 99 : ((player.preset && player.preset.grenades !== undefined) ? player.preset.grenades : (w.nades || 2));
                     player.fpvDrones = (currentMapId === 'range') ? 99 : 1;
                     if (currentMapId === 'range') {
                         player.x = 340; player.y = WORLD_H / 2; player.a = 0;
@@ -4109,12 +4268,18 @@
                     if (isAtBaseRed || isAtBaseYellow) {
                         let supplied = false;
                         if (u.mags < (w.mags || 6)) { u.mags++; supplied = true; }
+                        if (u.isPlayer && u.preset?.secondary && ALL_WEAPONS[u.preset.secondary]) {
+                            const sec = ALL_WEAPONS[u.preset.secondary];
+                            if ((u.secondaryMags || 0) < (sec.mags || 6)) { u.secondaryMags = (u.secondaryMags || 0) + 1; supplied = true; }
+                        }
                         if (u.armor < u.maxArmor) { u.armor = Math.min(u.maxArmor, u.armor + 30); supplied = true; }
                         if (u.band < (w.band || 3)) { u.band = Math.min(w.band || 3, u.band + 1); supplied = true; }
-                        if (u.nades < (w.nades || 2)) { u.nades = Math.min(w.nades || 2, u.nades + 1); supplied = true; }
+                        const maxN = (u.isPlayer && u.preset && u.preset.grenades !== undefined) ? u.preset.grenades : (w.nades || 2);
+                        if (u.nades < maxN) { u.nades = Math.min(maxN, u.nades + 1); supplied = true; }
                         if (u.smokes < (w.smokes || 2)) { u.smokes = Math.min(w.smokes || 2, u.smokes + 1); supplied = true; }
+                        if (u.isPlayer && (u.fpvDrones || 0) < 1) { u.fpvDrones = 1; supplied = true; }
                         if (supplied && u.isPlayer) {
-                            spawnText(u.x, u.y - 25, '+СНАБЖЕНИЕ И ГРАНАТЫ', '#4ade80');
+                            spawnText(u.x, u.y - 25, '+СНАБЖЕНИЕ ПОЛУЧЕНО', '#4ade80');
                             updateUI();
                         }
                     }
@@ -4137,6 +4302,10 @@
             const all = [player, ...bots];
             for (let i = bbs.length - 1; i >= 0; i--) {
                 const b = bbs[i];
+                if (isNaN(b.x) || isNaN(b.y) || isNaN(b.vx) || isNaN(b.vy)) {
+                    bbs.splice(i, 1);
+                    continue;
+                }
                 b.prevX = b.x;
                 b.prevY = b.y;
                 b.x += b.vx;
@@ -4244,9 +4413,36 @@
                 }
 
                 if (n.fuse <= 0) {
+                    if (n.isSmokeCanister) {
+                        // Pop Smoke Canister: Deploy realistic expanding smoke screen
+                        audio.playShot('cqb');
+                        spawnImpactSparks(n.x, n.y, '#e2e8f0', 14);
+                        smokes.push({
+                            x: n.x,
+                            y: n.y,
+                            state: 'expanding',
+                            r: 16,
+                            maxR: 98,
+                            spawnTime: now,
+                            duration: 18500, // ~18.5 sec realistic smoke lifecycle
+                            density: 0.35,
+                            isRealSmoke: true,
+                            puffs: [
+                                { ox: 0, oy: 0, r: 16, maxR: 74, driftX: (Math.random() - 0.5) * 0.16, driftY: (Math.random() - 0.5) * 0.16 },
+                                { ox: -24, oy: -12, r: 12, maxR: 62, driftX: (Math.random() - 0.5) * 0.16, driftY: (Math.random() - 0.5) * 0.16 },
+                                { ox: 24, oy: -10, r: 12, maxR: 64, driftX: (Math.random() - 0.5) * 0.16, driftY: (Math.random() - 0.5) * 0.16 },
+                                { ox: -14, oy: 22, r: 12, maxR: 58, driftX: (Math.random() - 0.5) * 0.16, driftY: (Math.random() - 0.5) * 0.16 },
+                                { ox: 20, oy: 20, r: 12, maxR: 60, driftX: (Math.random() - 0.5) * 0.16, driftY: (Math.random() - 0.5) * 0.16 },
+                                { ox: 0, oy: 26, r: 12, maxR: 54, driftX: (Math.random() - 0.5) * 0.16, driftY: (Math.random() - 0.5) * 0.16 }
+                            ]
+                        });
+                        nades.splice(i, 1);
+                        continue;
+                    }
+
                     audio.playExplosion();
                     spawnImpactSparks(n.x, n.y, '#fb923c', 22);
-                    smokes.push({ x: n.x, y: n.y, r: 12, maxR: 85, life: 75 });
+                    smokes.push({ x: n.x, y: n.y, r: 12, maxR: 85, life: 75, isRealSmoke: false });
                     
                     // Obstacle Occlusion Check: Shrapnel CANNOT damage through walls or solid covers!
                     all.forEach(u => {
@@ -4270,12 +4466,49 @@
                 }
             }
 
-            // Smokes
+            // Realistic Smokes Physics (3s deployment/expanding -> 11s dense opaque screen -> 4.5s progressive dissipation)
             for (let i = smokes.length - 1; i >= 0; i--) {
                 const s = smokes[i];
-                if (s.r < s.maxR) s.r += 1.5;
-                s.life--;
-                if (s.life <= 0) smokes.splice(i, 1);
+                if (s.isRealSmoke) {
+                    const elapsed = now - s.spawnTime;
+                    if (elapsed < 3200) {
+                        // Expanding phase
+                        s.state = 'expanding';
+                        if (s.r < s.maxR) s.r += 0.58;
+                        s.density = Math.min(0.96, 0.35 + (elapsed / 3200) * 0.61);
+                        s.puffs.forEach(p => {
+                            if (p.r < p.maxR) p.r += 0.48;
+                            p.ox += p.driftX;
+                            p.oy += p.driftY;
+                        });
+                    } else if (elapsed < 14000) {
+                        // Dense opaque phase (blocks sight completely)
+                        s.state = 'dense';
+                        s.density = 0.96;
+                        s.puffs.forEach(p => {
+                            p.ox += p.driftX * 0.35;
+                            p.oy += p.driftY * 0.35;
+                        });
+                    } else if (elapsed < 18500) {
+                        // Dissipation phase
+                        s.state = 'dissipating';
+                        const fadeProg = (elapsed - 14000) / 4500;
+                        s.density = Math.max(0, 0.96 * (1 - fadeProg));
+                        s.r += 0.22;
+                        s.puffs.forEach(p => {
+                            p.r += 0.18;
+                            p.ox += p.driftX * 0.7;
+                            p.oy += p.driftY * 0.7;
+                        });
+                    } else {
+                        smokes.splice(i, 1);
+                        continue;
+                    }
+                } else {
+                    if (s.r < s.maxR) s.r += 1.5;
+                    s.life--;
+                    if (s.life <= 0) smokes.splice(i, 1);
+                }
             }
 
             // Sectors capture
@@ -4336,9 +4569,13 @@
                 }
             }
 
-            // Original Centered Smooth Camera Follow
-            cam.x += (player.x - canvas.width / 2 - cam.x) * 0.12;
-            cam.y += (player.y - canvas.height / 2 - cam.y) * 0.12;
+            // Smooth Camera Follow (Follows Drone during flight, otherwise Player)
+            const followTarget = (fpvDrone && fpvDrone.active) ? fpvDrone : player;
+            if (followTarget) {
+                const followLerp = (fpvDrone && fpvDrone.active) ? 0.35 : 0.12;
+                cam.x += (followTarget.x - canvas.width / 2 - cam.x) * followLerp;
+                cam.y += (followTarget.y - canvas.height / 2 - cam.y) * followLerp;
+            }
 
             // Keep world mouse position 100% synchronized with screen cursor every single frame
             // Tactical Screen Shake
@@ -4562,10 +4799,13 @@
             const spawnMidY = WORLD_H / 2;
             const nowTime = performance.now();
             ctx.save();
-            // Centered Camera with Zoom Scaling
+            // Centered Camera with Zoom Scaling (Follows Drone during flight, otherwise Player)
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.scale(zoomScale, zoomScale);
-            ctx.translate(-(player ? player.x : cam.x + canvas.width / 2), -(player ? player.y : cam.y + canvas.height / 2));
+            const camTarget = (fpvDrone && fpvDrone.active) ? fpvDrone : player;
+            const targetCamX = camTarget ? camTarget.x : (cam.x + canvas.width / 2);
+            const targetCamY = camTarget ? camTarget.y : (cam.y + canvas.height / 2);
+            ctx.translate(-targetCamX, -targetCamY);
 
             // Ground
             if (currentMapId === 'tokmachka') {
@@ -4972,10 +5212,10 @@
 
                 // 2. Painted Distance Lines across the range floor
                 const distLines = [
-                    { x: 820,  label: '15 МЕТРОВ' },
-                    { x: 1380, label: '30 МЕТРОВ' },
-                    { x: 1940, label: '50 МЕТРОВ' },
-                    { x: 2420, label: '80 МЕТРОВ' }
+                    { x: 680,  label: '15 МЕТРОВ' },
+                    { x: 980,  label: '30 МЕТРОВ' },
+                    { x: 1350, label: '50 МЕТРОВ' },
+                    { x: 1550, label: '65 МЕТРОВ' }
                 ];
                 distLines.forEach(dl => {
                     ctx.save();
@@ -5108,9 +5348,24 @@
 
             // Grenade Aiming Trajectory & Wall Ricochet (Slot 3)
             if (player && player.state === 'active' && player.activeSlot === 3 && player.nades > 0) {
-                const maxThrow = 340;
+                const maxThrow = 220; // Realistic capped infantry throwing range
+
+                // Draw Max Throw Distance Range Envelope Circle around Player
+                ctx.save();
+                ctx.strokeStyle = 'rgba(249, 115, 22, 0.35)';
+                ctx.setLineDash([6, 6]);
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, maxThrow, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(249, 115, 22, 0.75)';
+                ctx.font = 'bold 9px "JetBrains Mono"';
+                ctx.textAlign = 'center';
+                ctx.fillText('МАКС. ДАЛЬНОСТЬ БРОСКА', player.x, player.y - maxThrow - 6);
+                ctx.restore();
+
                 const mDist = Math.hypot(mouse.worldX - player.x, mouse.worldY - player.y);
-                const throwDist = Math.max(70, Math.min(maxThrow, player.nadeChargeDist || mDist));
+                const throwDist = Math.max(60, Math.min(maxThrow, player.nadeChargeDist || mDist));
                 const throwAngle = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
                 const dirX = Math.cos(throwAngle);
                 const dirY = Math.sin(throwAngle);
@@ -5194,6 +5449,9 @@
 
                 player.aimedGrenadeDest = { x: landX, y: landY };
                 player.aimedBounceHit = bounceHit;
+                player.aimedPathPoints = bounceHit 
+                    ? [{ x: player.x, y: player.y }, { x: bounceHit.x, y: bounceHit.y, isBounce: true }, { x: landX, y: landY }] 
+                    : [{ x: player.x, y: player.y }, { x: landX, y: landY }];
             }
 
             // Tactical Laser Sight
@@ -5289,19 +5547,47 @@
                 ctx.restore();
             });
 
-            // Smokes
+            // Smokes Rendering (Volumetric Billowing Clouds with Expanding / Dissipating Alpha)
             smokes.forEach(s => {
                 ctx.save();
-                const a = Math.min(0.85, s.life / 120);
-                const grad = ctx.createRadialGradient(s.x, s.y, 10, s.x, s.y, s.r);
-                grad.addColorStop(0, `rgba(241, 245, 249, ${a})`);
-                grad.addColorStop(1, 'rgba(148, 163, 184, 0)');
-                ctx.fillStyle = grad;
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+                if (s.isRealSmoke) {
+                    const density = s.density !== undefined ? s.density : 0.8;
+                    // Draw outer subtle diffuse halo
+                    const hazeGrad = ctx.createRadialGradient(s.x, s.y, 10, s.x, s.y, s.r);
+                    hazeGrad.addColorStop(0, `rgba(226, 232, 240, ${density * 0.45})`);
+                    hazeGrad.addColorStop(1, 'rgba(148, 163, 184, 0)');
+                    ctx.fillStyle = hazeGrad;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Draw volumetric billowing puff clusters
+                    if (s.puffs) {
+                        s.puffs.forEach(p => {
+                            const px = s.x + p.ox;
+                            const py = s.y + p.oy;
+                            const pGrad = ctx.createRadialGradient(px, py, 4, px, py, p.r);
+                            pGrad.addColorStop(0, `rgba(248, 250, 252, ${density * 0.94})`);
+                            pGrad.addColorStop(0.65, `rgba(203, 213, 225, ${density * 0.65})`);
+                            pGrad.addColorStop(1, 'rgba(148, 163, 184, 0)');
+                            ctx.fillStyle = pGrad;
+                            ctx.beginPath();
+                            ctx.arc(px, py, p.r, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                    }
+                } else {
+                    const a = Math.min(0.85, s.life / 120);
+                    const grad = ctx.createRadialGradient(s.x, s.y, 10, s.x, s.y, s.r);
+                    grad.addColorStop(0, `rgba(241, 245, 249, ${a})`);
+                    grad.addColorStop(1, 'rgba(148, 163, 184, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+                }
                 ctx.restore();
             });
 
-                        // Grenades Sprite Model (F-1 Flying & Landed on Ground)
+            // Grenades Sprite Model (F-1 Pineapple & Smoke Canisters)
             nades.forEach(n => {
                 ctx.save();
                 // 1. Ground shadow on surface
@@ -5316,38 +5602,59 @@
                 ctx.translate(n.x, drawY);
                 ctx.rotate(n.rot || 0);
 
-                // F-1 Pineapple Cast-Iron Ribbed Body
-                ctx.fillStyle = '#3f4f1f';
-                ctx.strokeStyle = '#141a08';
-                ctx.lineWidth = 1.8;
-                ctx.beginPath();
-                ctx.arc(0, 0, 7, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
+                if (n.isSmokeCanister) {
+                    // Cylindrical Tactical Smoke Grenade Canister
+                    ctx.fillStyle = '#475569';
+                    ctx.strokeStyle = '#0f172a';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.roundRect(-4.5, -8, 9, 16, 2);
+                    ctx.fill();
+                    ctx.stroke();
 
-                // Rib grooves
-                ctx.strokeStyle = '#1a2208';
-                ctx.lineWidth = 1.2;
-                ctx.beginPath();
-                ctx.moveTo(-6, 0); ctx.lineTo(6, 0);
-                ctx.moveTo(0, -6); ctx.lineTo(0, 6);
-                ctx.stroke();
+                    // Identification white / sky color ring
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.fillRect(-4.5, -2, 9, 4);
 
-                // Fuse plug (УЗРГМ) & safety lever
-                ctx.fillStyle = '#9ca3af';
-                ctx.fillRect(-2, -10, 4, 4);
-                ctx.strokeStyle = '#d1d5db';
-                ctx.lineWidth = 1.4;
-                ctx.beginPath();
-                ctx.moveTo(1.5, -9); ctx.lineTo(5, -4); ctx.lineTo(5, 3);
-                ctx.stroke();
+                    // Smoke release venting holes
+                    ctx.fillStyle = '#0f172a';
+                    ctx.beginPath();
+                    ctx.arc(0, -6, 1.2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // F-1 Pineapple Cast-Iron Ribbed Body
+                    ctx.fillStyle = '#3f4f1f';
+                    ctx.strokeStyle = '#141a08';
+                    ctx.lineWidth = 1.8;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 7, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
 
-                // Safety ring
-                ctx.strokeStyle = '#facc15';
-                ctx.lineWidth = 1.2;
-                ctx.beginPath();
-                ctx.arc(-3.5, -9, 2.2, 0, Math.PI * 2);
-                ctx.stroke();
+                    // Rib grooves
+                    ctx.strokeStyle = '#1a2208';
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(-6, 0); ctx.lineTo(6, 0);
+                    ctx.moveTo(0, -6); ctx.lineTo(0, 6);
+                    ctx.stroke();
+
+                    // Fuse plug (УЗРГМ) & safety lever
+                    ctx.fillStyle = '#9ca3af';
+                    ctx.fillRect(-2, -10, 4, 4);
+                    ctx.strokeStyle = '#d1d5db';
+                    ctx.lineWidth = 1.4;
+                    ctx.beginPath();
+                    ctx.moveTo(1.5, -9); ctx.lineTo(5, -4); ctx.lineTo(5, 3);
+                    ctx.stroke();
+
+                    // Safety ring
+                    ctx.strokeStyle = '#facc15';
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.arc(-3.5, -9, 2.2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
 
                 // Blinking spark fuse if landed and ticking down to blast
                 if (n.landed) {
@@ -5546,43 +5853,7 @@
                 ctx.globalAlpha = 1.0;
             }
 
-            // Base REB Jammer Dome Visualizer (Combat Maps only - anti-spawnkill)
-            if (currentMapId !== 'range') {
-                const spawnMidY = WORLD_H / 2;
-                // Yellow Base REB Dome
-                ctx.save();
-                ctx.strokeStyle = 'rgba(250, 204, 21, 0.45)';
-                ctx.fillStyle = 'rgba(250, 204, 21, 0.05)';
-                ctx.lineWidth = 1.8;
-                ctx.setLineDash([8, 8]);
-                ctx.beginPath();
-                ctx.arc(180, spawnMidY, 260, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.fillStyle = 'rgba(250, 204, 21, 0.8)';
-                ctx.font = 'bold 10px "JetBrains Mono"';
-                ctx.textAlign = 'center';
-                ctx.fillText('🛡️ КУПОЛ РЭБ (БАЗА УКР)', 180, spawnMidY - 268);
-                ctx.restore();
-
-                // Red Base REB Dome
-                ctx.save();
-                ctx.strokeStyle = 'rgba(239, 68, 68, 0.45)';
-                ctx.fillStyle = 'rgba(239, 68, 68, 0.05)';
-                ctx.lineWidth = 1.8;
-                ctx.setLineDash([8, 8]);
-                ctx.beginPath();
-                ctx.arc(WORLD_W - 180, spawnMidY, 260, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
-                ctx.font = 'bold 10px "JetBrains Mono"';
-                ctx.textAlign = 'center';
-                ctx.fillText('🛡️ КУПОЛ РЭБ (БАЗА РФ)', WORLD_W - 180, spawnMidY - 268);
-                ctx.restore();
-            }
+            // Base REB Jammer Dome is invisible to players (handled purely in system logic)
 
             // Render FPV Drone Model (Flying above obstacles with ground shadow)
             if (fpvDrone && fpvDrone.active) {
@@ -5624,15 +5895,20 @@
                 ctx.fill();
                 ctx.stroke();
 
-                // Payload: Kamikaze Warhead or Bomber Grenades
+                // Payload: Kamikaze Warhead, Bomber Grenades or Recon Optics
                 if (fd.type === 'kamikaze') {
                     ctx.fillStyle = '#f97316';
                     ctx.beginPath();
                     ctx.arc(8, 0, 4.5, 0, Math.PI * 2);
                     ctx.fill();
-                } else {
+                } else if (fd.type === 'bomber') {
                     ctx.fillStyle = '#4ade80';
                     ctx.fillRect(-4, -3, 8, 6);
+                } else {
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 4, 0, Math.PI * 2);
+                    ctx.fill();
                 }
 
                 // Front FPV Camera Lens
@@ -5731,8 +6007,10 @@
                 ctx.shadowBlur = 4;
                 if (fd.type === 'kamikaze') {
                     ctx.fillText('РЕЖИМ: [ТАРАННЫЙ КАМИКАДЗЕ] — НАВЕДИТЕСЬ НА ЦЕЛЬ ИЛИ ЖМИТЕ [ЛКМ / ПРОБЕЛ] ДЛЯ ПОДРЫВА', cx, canvas.height - 48);
+                } else if (fd.type === 'bomber') {
+                    ctx.fillText(`РЕЖИМ: [БОМБАРДИР] — СБРОС ВОГ ПОД СЕБЯ [ПРОБЕЛ / ЛКМ] (ОСТАЛОСЬ: ${fd.grenades}/3)`, cx, canvas.height - 48);
                 } else {
-                    ctx.fillText(`РЕЖИМ: [БОМБАРДИР] — СБРОС ВОГ НА [ПРОБЕЛ / ЛКМ] (ОСТАЛОСЬ: ${fd.grenades}/3)`, cx, canvas.height - 48);
+                    ctx.fillText('РЕЖИМ: [РАЗВЕДЧИК (БПЛА)] — ПОДСВЕТКА ВРАГОВ НА РАДАРЕ // [ПРОБЕЛ / ESC] ВОЗВРАТ', cx, canvas.height - 48);
                 }
 
                 ctx.fillStyle = '#a1a1aa';
@@ -5844,16 +6122,28 @@
             });
 
             const all = [player, ...bots];
+            const isReconActive = (fpvDrone && fpvDrone.active && fpvDrone.type === 'recon');
             all.forEach(u => {
                 if (!u || u.state === 'dead') return;
-                const isVis = isUnitSpottedByTeam(u, player.side);
+                const isVis = isReconActive || isUnitSpottedByTeam(u, player.side);
                 if (!isVis) return;
 
-                mctx.fillStyle = u.isPlayer ? '#4ade80' : u.side === 'red' ? '#ef4444' : '#facc15';
+                mctx.fillStyle = u.isPlayer ? '#4ade80' : (u.side === 'red' ? '#ef4444' : '#facc15');
                 mctx.beginPath();
-                mctx.arc(u.x * sx, u.y * sy, u.isPlayer ? 4.5 : 2.5, 0, Math.PI * 2);
+                mctx.arc(u.x * sx, u.y * sy, u.isPlayer ? 4.5 : (isReconActive && u.side !== player.side ? 3.5 : 2.5), 0, Math.PI * 2);
                 mctx.fill();
             });
+
+            // Draw FPV / Recon Drone icon on Minimap
+            if (fpvDrone && fpvDrone.active) {
+                mctx.fillStyle = '#c084fc';
+                mctx.beginPath();
+                mctx.arc(fpvDrone.x * sx, fpvDrone.y * sy, 4.0, 0, Math.PI * 2);
+                mctx.fill();
+                mctx.strokeStyle = '#ffffff';
+                mctx.lineWidth = 1;
+                mctx.stroke();
+            }
         }
 
         function drawMapMiniPreview(canvasId, mapId) {
@@ -6034,7 +6324,52 @@
             if (hNade) hNade.textContent = (player.nades || 0) + ' шт';
             if (hBand) hBand.textContent = (player.band || 0) + ' шт';
             if (hudDroneBadge) hudDroneBadge.textContent = player.fpvDrones || 0;
-            if (hotbarDroneMode) hotbarDroneMode.textContent = selectedDroneType === 'kamikaze' ? 'КАМИКАДЗЕ' : 'БОМБАРДИР';
+            if (hotbarDroneMode) {
+                if (selectedDroneType === 'kamikaze') hotbarDroneMode.textContent = 'КАМИКАДЗЕ';
+                else if (selectedDroneType === 'bomber') hotbarDroneMode.textContent = 'БОМБАРДИР';
+                else hotbarDroneMode.textContent = 'РАЗВЕДКА';
+            }
+
+            // Per-Item Resupply Progress Indicators (Live 0.1s update per item icon)
+            const maxNades = (player.preset && player.preset.grenades !== undefined) ? player.preset.grenades : (primW.nades || 2);
+            const maxSmokes = primW.smokes || 2;
+            const maxBand = primW.band || 3;
+            const maxMags = primW.mags || 6;
+            const nowMs = performance.now();
+            const supplyRemain = Math.max(0, (gameState.lastSupplyTick + 3500 - nowMs) / 1000).toFixed(1);
+            const supplyPct = Math.min(100, Math.round(((nowMs - gameState.lastSupplyTick) / 3500) * 100));
+
+            function updateSlotResupply(timerId, textId, barId, needsSupply, prefix) {
+                const timerEl = document.getElementById(timerId);
+                const textEl = document.getElementById(textId);
+                const barEl = document.getElementById(barId);
+                if (!timerEl) return;
+                if (inSupplyZone && needsSupply) {
+                    timerEl.classList.remove('hidden');
+                    if (textEl) textEl.textContent = isAtRangeSupply ? `${prefix} [F]` : `${prefix} ${supplyRemain}с`;
+                    if (barEl) barEl.style.width = isAtRangeSupply ? '100%' : `${supplyPct}%`;
+                } else {
+                    timerEl.classList.add('hidden');
+                }
+            }
+
+            const secIdForSupply = player.preset?.secondary;
+            const hasSecForSupply = !!(secIdForSupply && secIdForSupply !== 'none' && ALL_WEAPONS[secIdForSupply]);
+            const secWepSupply = hasSecForSupply ? ALL_WEAPONS[secIdForSupply] : null;
+
+            const needsPrimaryAmmo = (player.mags || 0) < maxMags;
+            const needsSecAmmo = hasSecForSupply && secWepSupply && ((player.secondaryMags || 0) < (secWepSupply.mags || 6));
+            const needsNades = (player.nades || 0) < maxNades;
+            const needsBand = (player.band || 0) < maxBand;
+            const needsDrones = (player.fpvDrones || 0) < 1;
+            const needsSmokes = (player.smokes || 0) < maxSmokes;
+
+            updateSlotResupply('resupplyTimer_slot1', 'resupplyText_slot1', 'resupplyBar_slot1', needsPrimaryAmmo, '+БК');
+            updateSlotResupply('resupplyTimer_slot2', 'resupplyText_slot2', 'resupplyBar_slot2', needsSecAmmo, '+ПИСТ');
+            updateSlotResupply('resupplyTimer_slot3', 'resupplyText_slot3', 'resupplyBar_slot3', needsNades, '+Ф-1');
+            updateSlotResupply('resupplyTimer_slot4', 'resupplyText_slot4', 'resupplyBar_slot4', needsBand, '+БИНТ');
+            updateSlotResupply('resupplyTimer_slot5', 'resupplyText_slot5', 'resupplyBar_slot5', needsDrones, '+ДРОН');
+            updateSlotResupply('resupplyTimer_smoke', 'resupplyText_smoke', 'resupplyBar_smoke', needsSmokes, '+ДЫМ');
 
             // Slot 2: Secondary Weapon (Strictly hidden when no secondary weapon equipped in loadout)
             const secId = player.preset?.secondary;
@@ -6367,11 +6702,12 @@
             if (e.code === 'KeyG') { player.activeSlot = (player.activeSlot === 3 ? 1 : 3); updateUI(); }
             if (e.code === 'KeyE') useBandage(player);
 
-            // Spacebar shoot / drop bomb
+            // Spacebar shoot / drop bomb / recall recon drone
             if (e.code === 'Space') {
                 e.preventDefault();
                 if (fpvDrone && fpvDrone.active) {
                     if (fpvDrone.type === 'bomber') dropFpvGrenade();
+                    else if (fpvDrone.type === 'recon') abortFpvDrone(true);
                     else triggerDroneDetonation(fpvDrone, false);
                     return;
                 }
@@ -6379,6 +6715,10 @@
                     player.a = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
                     shoot(player, now);
                 }
+            }
+
+            if (e.code === 'KeyV') {
+                toggleDroneType();
             }
 
             if (e.code === 'Escape') {
@@ -6499,7 +6839,7 @@
             updatePointerCoord(e.clientX, e.clientY);
             if (player && player.activeSlot === 3 && player.nadeCharging) {
                 const curDist = Math.hypot(mouse.worldX - player.x, mouse.worldY - player.y);
-                player.nadeChargeDist = Math.max(70, Math.min(500, curDist));
+                player.nadeChargeDist = Math.max(60, Math.min(220, curDist));
             }
         });
 
@@ -6523,11 +6863,12 @@
                 updatePointerCoord(e.clientX, e.clientY);
                 if (fpvDrone && fpvDrone.active) {
                     if (fpvDrone.type === 'bomber') dropFpvGrenade();
+                    else if (fpvDrone.type === 'recon') abortFpvDrone(true);
                     else triggerDroneDetonation(fpvDrone, false);
                     return;
                 }
                 // Range armory counter interactive click
-                if (currentMapId === 'range' && Math.hypot(mouse.worldX - 430, mouse.worldY - 800) < 65) {
+                if (currentMapId === 'range' && Math.hypot(mouse.worldX - 430, mouse.worldY - 800) < 120) {
                     openQuickLoadoutModal();
                     return;
                 }
@@ -6536,7 +6877,7 @@
                         if (player.nades > 0) {
                             player.nadeCharging = true;
                             const curDist = Math.hypot(mouse.worldX - player.x, mouse.worldY - player.y);
-                            player.nadeChargeDist = Math.max(70, Math.min(500, curDist));
+                            player.nadeChargeDist = Math.max(60, Math.min(220, curDist));
                         }
                         return;
                     }
